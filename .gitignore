@@ -1,0 +1,14 @@
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+*.log
+*.err.log
+
+.DS_Store
+Thumbs.db
+
+__pycache__/
+*.pyc
+
