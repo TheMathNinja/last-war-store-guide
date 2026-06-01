@@ -5,13 +5,14 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-01 honor store items update"
+app_build_label <- "Build: 2026-06-01 season availability selector"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {
   file.path(Sys.getenv("USERPROFILE"), "Desktop", "Last War Price Guide.xlsx")
 }
+season_choices <- c("Season 1", "Preseason")
 
 parse_num <- function(x) {
   x <- as.character(x)
@@ -462,7 +463,16 @@ normalize_one_listing <- function(row, hq_level = 29) {
   )
 }
 
-load_prices <- function(path = source_workbook, hq_level = 29) {
+filter_prices_for_season <- function(prices, season = "Season 1") {
+  season <- ifelse(is.null(season) || is.na(season) || season == "", "Season 1", season)
+  if (season == "Preseason") {
+    prices <- prices %>%
+      filter(!(store == "Honor Storefront" & item == "Universal Exclusive Weapon Shard"))
+  }
+  prices
+}
+
+load_prices <- function(path = source_workbook, hq_level = 29, season = "Season 1") {
   raw <- read_excel(path, sheet = 1, col_names = FALSE, .name_repair = "minimal")
   starts <- which(!is.na(as.character(raw[1, ])) & as.character(raw[2, ]) == "Item")
 
@@ -510,6 +520,7 @@ load_prices <- function(path = source_workbook, hq_level = 29) {
   }))
 
   normalized %>%
+    filter_prices_for_season(season) %>%
     mutate(unit_native = price / comparable_qty) %>%
     select(row_id, store, item, item_key, item_canonical, qty, comparable_qty,
            comparable_unit, flexibility_rank, anchor_group, normalization_note, price, curr, limit, unit_native)
@@ -1245,7 +1256,7 @@ item_choices <- function(prices_df) {
   stats::setNames(values, labels)
 }
 
-initial_prices <- load_prices(hq_level = 29)
+initial_prices <- load_prices(hq_level = 29, season = "Season 1")
 initial_train_items <- train_items(hq_level = 29)
 
 ui <- fluidPage(
@@ -1272,6 +1283,11 @@ ui <- fluidPage(
               div(class = "byline", "Compliments of [tAf]TheMathNinja [Server 2143]. DM with issues or suggestions."),
               div(class = "build-stamp", app_build_label)
           )
+      ),
+      div(class = "control-card hq-card",
+          selectInput("season", "Season", choices = season_choices, selected = "Season 1"),
+          div(class = "note",
+              "Season controls which store listings are available throughout the app.")
       ),
       div(class = "control-card hq-card",
           sliderInput("hq_level", "HQ Level", min = 20, max = 30, value = 29, step = 1),
@@ -1363,7 +1379,11 @@ server <- function(input, output, session) {
   saved_train_cars <- reactiveVal(list())
   editing_train_car <- reactiveVal(NULL)
 
-  prices <- reactive(load_prices(hq_level = input$hq_level))
+  selected_season <- reactive({
+    if (is.null(input$season) || is.na(input$season) || input$season == "") "Season 1" else input$season
+  })
+
+  prices <- reactive(load_prices(hq_level = input$hq_level, season = selected_season()))
   model_for <- function() build_value_model(prices())
 
   store_model <- reactive(model_for())
@@ -1371,10 +1391,15 @@ server <- function(input, output, session) {
   currency_model <- reactive(model_for())
 
   observeEvent(prices(), {
-    updateSelectInput(session, "store", choices = sort(unique(prices()$store)), selected = input$store)
-    updateSelectInput(session, "item", choices = item_choices(prices()), selected = input$item)
+    store_choices <- sort(unique(prices()$store))
+    selected_store <- if (!is.null(input$store) && input$store %in% store_choices) input$store else first(store_choices)
+    item_choice_values <- item_choices(prices())
+    selected_item <- if (!is.null(input$item) && input$item %in% unname(item_choice_values)) input$item else first(unname(item_choice_values))
+    updateSelectInput(session, "store", choices = store_choices, selected = selected_store)
+    updateSelectInput(session, "item", choices = item_choice_values, selected = selected_item)
     currency_choices <- c("All currencies" = "__ALL__", sort(unique(prices()$curr[prices()$curr != "DIA"])))
-    updateSelectInput(session, "anchor_currency", choices = currency_choices, selected = input$anchor_currency)
+    selected_currency <- if (!is.null(input$anchor_currency) && input$anchor_currency %in% unname(currency_choices)) input$anchor_currency else "__ALL__"
+    updateSelectInput(session, "anchor_currency", choices = currency_choices, selected = selected_currency)
   }, ignoreInit = TRUE)
 
   observeEvent(session$clientData$url_search, {
