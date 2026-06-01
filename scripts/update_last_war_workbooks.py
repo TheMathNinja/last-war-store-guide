@@ -38,6 +38,21 @@ MANAGED_STORES = {
         ("UR Hero Universal Shard", 10, 2000, "DIA", None),
         ("Resource Choice Chest (UR)", 10, 1500, "DIA", None),
     ],
+    "Serum Shop": [
+        ("UR Hero Universal Shard", 10, 100, "SER", 1),
+        ("Drone Parts", 20, 100, "SER", None),
+        ("S1 Skill Point", 1, 100, "SER", None),
+        ("Universal Exclusive Weapon Shard", 10, 100, "SER", None),
+        ("Recruitment Orders", 1000, 500, "SER", 1),
+        ("Profession EXP", 10000, 20, "SER", 20),
+        ("Mutant Crystals", 10000, 10, "SER", 50),
+        ("Iron Chest (SSR)", 1, 20, "SER", 100),
+        ("Coin Chest (SSR)", 1, 20, "SER", 100),
+        ("Food Chest (SSR)", 1, 20, "SER", 100),
+        ("5m Construction Speed-Up", 1, 1, "SER", 9999),
+        ("5m Research Speed-Up", 1, 1, "SER", 9999),
+        ("5m Training Speed-Up", 1, 1, "SER", 9999),
+    ],
 }
 
 ADDITIONAL_ROWS = {
