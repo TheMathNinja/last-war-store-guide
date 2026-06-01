@@ -5,6 +5,6 @@ account: analyticsff
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 17396921
-bundleId: 12065711
+bundleId: 12065724
 url: https://analyticsff.shinyapps.io/last-war-store-guide/
 version: 1

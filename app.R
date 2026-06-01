@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-01 season availability selector"
+app_build_label <- "Build: 2026-06-01 weapon shard icon update"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1056,6 +1056,7 @@ item_icon <- function(item, item_key = "") {
     item_l == "resource chest sr" ~ icon_or_badge("resource-chest-sr.svg", "SR", "chest", "Resource Chest (SR)"),
     item_l == "hero recruitment ticket" ~ icon_or_badge("hero-recruitment-ticket.svg", "HRT", "ticket", "Hero recruitment ticket"),
     item_l == "survivor recruitment ticket" ~ icon_or_badge("survivor-ticket.webp", "SRT", "ticket", "Survivor recruitment ticket"),
+    item_l == "universal exclusive weapon shard" ~ icon_or_badge("universal-exclusive-weapon-shard.svg", "WPN", "shard", "Universal Exclusive Weapon Shard"),
     str_detect(item_l, "\\bur\\b.*hero.*shard|hero choice chest|universal ur hero shard") ~ icon_or_badge("shard-ur.svg", "UR", "shard", "UR hero shard"),
     str_detect(item_l, "\\bssr\\b.*hero.*shard|violet shard") ~ icon_or_badge("shard-ssr.svg", "SSR", "shard", "SSR hero shard"),
     str_detect(item_l, "\\bsr\\b.*hero.*shard") ~ icon_or_badge("shard-sr.svg", "SR", "shard", "SR hero shard"),
