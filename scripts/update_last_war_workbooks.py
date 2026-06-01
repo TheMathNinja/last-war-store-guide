@@ -36,6 +36,7 @@ MANAGED_STORES = {
     ],
     "Wandering Merchant": [
         ("UR Hero Universal Shard", 10, 2000, "DIA", None),
+        ("Resource Choice Chest (UR)", 10, 1500, "DIA", None),
     ],
 }
 
