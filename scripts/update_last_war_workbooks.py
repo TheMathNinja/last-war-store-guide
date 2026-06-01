@@ -41,6 +41,10 @@ MANAGED_STORES = {
 }
 
 ADDITIONAL_ROWS = {
+    "Honor Storefront": [
+        ("Universal Exclusive Weapon Shard", 1, 2500, "HON", 25),
+        ("Stamina", 50, 1000, "HON", 50),
+    ],
     "Bounty Hunter Trade Store": [
         ("Drone Parts", 10, 32, "BOUN", 500),
         ("Valor Badge", 100, 50, "BOUN", 100),
