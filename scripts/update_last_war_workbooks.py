@@ -53,6 +53,16 @@ MANAGED_STORES = {
         ("5m Research Speed-Up", 1, 1, "SER", 9999),
         ("5m Training Speed-Up", 1, 1, "SER", 9999),
     ],
+    "Season Storefront": [
+        ("Dominance Sanctuary (Permanent)", 1, 1000, "SEA", 1),
+        ("Gear Blueprint (MR)", 1, 100, "SEA", 10),
+        ("God of Judgment", 1, 80, "SEA", 5),
+        ("S1 Skill Point", 1, 50, "SEA", 5),
+        ("Profession Change Certificate", 1, 50, "SEA", 2),
+        ("Profession Skill Reset Book", 1, 10, "SEA", 5),
+        ("Sandstorm Master (Permanent)", 1, 200, "SEA", 1),
+        ("UR Hero Badge", 1, 50, "SEA", 1),
+    ],
 }
 
 ADDITIONAL_ROWS = {

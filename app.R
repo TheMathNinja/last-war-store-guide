@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-01 serum shop season update"
+app_build_label <- "Build: 2026-06-01 season storefront update"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -467,6 +467,7 @@ filter_prices_for_season <- function(prices, season = "Season 1") {
   season <- ifelse(is.null(season) || is.na(season) || season == "", "Season 1", season)
   if (season == "Preseason") {
     prices <- prices %>%
+      filter(store != "Season Storefront") %>%
       filter(store != "Serum Shop") %>%
       filter(!(store == "Honor Storefront" & item == "Universal Exclusive Weapon Shard"))
   }
@@ -1052,6 +1053,12 @@ item_icon <- function(item, item_key = "") {
     item_l == "recruitment orders" ~ icon_badge("ORD", "ticket", "Recruitment Orders"),
     item_l == "s1 skill point" ~ icon_badge("S1", "badge", "S1 Skill Point"),
     item_l == "mutant crystals" ~ icon_badge("MUT", "material", "Mutant Crystals"),
+    item_l == "dominance sanctuary permanent" ~ icon_badge("SAN", "decor", "Dominance Sanctuary (Permanent)"),
+    item_l == "god of judgment" ~ icon_badge("GOD", "decor", "God of Judgment"),
+    item_l == "profession change certificate" ~ icon_badge("JOB", "badge", "Profession Change Certificate"),
+    item_l == "profession skill reset book" ~ icon_badge("SKL", "badge", "Profession Skill Reset Book"),
+    item_l == "sandstorm master permanent" ~ icon_badge("SAN", "decor", "Sandstorm Master (Permanent)"),
+    item_l == "ur hero badge" ~ icon_badge("UR", "badge", "UR Hero Badge"),
     item_l == "ssr gear chest" ~ icon_or_badge("gear-chest-ssr.svg", "SSR", "gear", "SSR Gear Chest"),
     item_l == "gear chest sr" ~ icon_or_badge("gear-chest-sr.svg", "SR", "gear", "Gear Chest (SR)"),
     item_l == "ur campaign chest" | item_l == "campaign chest ur" ~ icon_or_badge("campaign-chest-ur.svg", "UR", "chest", "UR Campaign Chest"),
@@ -1112,6 +1119,7 @@ currency_icon <- function(curr) {
     curr == "MOB" ~ icon_badge("MOB", "campaign", "Total Mobilization"),
     curr == "ID" ~ icon_badge("ID", "badge", "ID Points"),
     curr == "SER" ~ icon_badge("SER", "material", "Serum Fragments"),
+    curr == "SEA" ~ icon_badge("SEA", "campaign", "Season Currency"),
     curr == "DEL" ~ icon_or_badge("choice-chest-deluxe.svg", "DEL", "chest", "Deluxe Choice Chest pick"),
     curr == "LUX" ~ icon_or_badge("choice-chest-luxury.svg", "LUX", "chest", "Luxury Choice Chest pick"),
     TRUE ~ icon_badge(curr, "misc", curr)
@@ -1187,6 +1195,7 @@ currency_label <- function(curr) {
     MOB = "Total Mobilization",
     ID = "ID Points",
     SER = "Serum Fragments",
+    SEA = "Season Currency",
     DEL = "Deluxe Choice Chest pick",
     LUX = "Luxury Choice Chest pick",
     COUR = "Courage Medals",
