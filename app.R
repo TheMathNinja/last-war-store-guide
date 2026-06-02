@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-02 arms race stamina bonuses"
+app_build_label <- "Build: 2026-06-02 Monica stamina bonus"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1727,17 +1727,28 @@ server <- function(input, output, session) {
       amount
     }
 
+    fmt_stam_qty <- function(x) {
+      case_when(
+        abs(x) >= 1e6 ~ paste0(fmt_num(x / 1e6, 2), "m"),
+        abs(x) >= 1e3 ~ paste0(fmt_num(x / 1e3, 1), "k"),
+        TRUE ~ fmt_num(x, 0)
+      )
+    }
+
     iron_50k_value <- dia_for_item("iron resource", 50000 / sr_amount("iron"))
     five_min_speed_value <- dia_for_item("universal speed up hour", 1 / 12)
     s1_gift_chest_value <- 0.70 * iron_50k_value + 0.30 * five_min_speed_value
+    monica_bonus <- isTRUE(input$stam_monica)
+    iron_food_qty <- if (monica_bonus) 478500 else 276000
+    coin_qty <- if (monica_bonus) 305100 else 176000
 
     tibble::tribble(
       ~reward, ~qty_label, ~chance, ~icon_item, ~dia_if_received, ~note,
       "Battle Data", "2.5k", 1, "Battle Data (10k)", dia_for_item("battle data", 2500 / 10000), "",
       "Hero EXP", "683k", 1, "Hero EXP Chest (SSR)", NA_real_, "Needs raw Hero EXP per chest before DIA value can be computed.",
-      "Iron", "276k", 1, "Iron", dia_for_item("iron resource", 276000 / sr_amount("iron")), "",
-      "Food", "276k", 1, "Food", dia_for_item("food resource", 276000 / sr_amount("food")), "",
-      "Coins", "176k", 1, "Coins", dia_for_item("coins resource", 176000 / sr_amount("coins")), "",
+      "Iron", fmt_stam_qty(iron_food_qty), 1, "Iron", dia_for_item("iron resource", iron_food_qty / sr_amount("iron")), if_else(monica_bonus, "Includes Monica's Treasure Hunter Lvl 26 resource bonus.", ""),
+      "Food", fmt_stam_qty(iron_food_qty), 1, "Food", dia_for_item("food resource", iron_food_qty / sr_amount("food")), if_else(monica_bonus, "Includes Monica's Treasure Hunter Lvl 26 resource bonus.", ""),
+      "Coins", fmt_stam_qty(coin_qty), 1, "Coins", dia_for_item("coins resource", coin_qty / sr_amount("coins")), if_else(monica_bonus, "Includes Monica's Treasure Hunter Lvl 26 resource bonus.", ""),
       "Diamonds", "20", 1 / 3, "Diamonds", 20, "",
       "Hero Recruitment Ticket", "1", 1 / 3, "Hero Recruitment Ticket", dia_for_item("hero recruitment ticket", 1), "",
       "Gear Chest (SR)", "1", 1 / 3, "Gear Chest (SR)", dia_for_item("superalloy equivalent", 40), "Train-calculator equivalence: 1 SR gear chest = 40 Superalloy.",
@@ -1791,7 +1802,7 @@ server <- function(input, output, session) {
       notes <- c(notes, "Arms Race bonus tiers are shown below as separate cumulative milestone values.")
     }
     if (isTRUE(input$stam_monica)) {
-      notes <- c(notes, "Monica bonus reward math is not entered yet, so that checkbox is currently informational.")
+      notes <- c(notes, "Monica's Treasure Hunter Lvl 26 is applied only to the core food, iron, and coin rewards.")
     }
     div(class = "note", paste(notes, collapse = " "))
   })
