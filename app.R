@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-02 stamina purchase tab"
+app_build_label <- "Build: 2026-06-02 arms race stamina bonuses"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1396,7 +1396,9 @@ ui <- fluidPage(
                               column(4, div(class = "metric", div(class = "label", "Known DIA / Stam"), div(class = "value", textOutput("stam_value_per_stam", inline = TRUE))))
                             ))
                    ),
-                   tableOutput("stam_table")
+                   tableOutput("stam_table"),
+                   uiOutput("arms_race_bonus_heading"),
+                   tableOutput("arms_race_bonus_table")
                  )),
         tabPanel("Currency Conversion Model",
                  h3("Inferred Exchange Rates"),
@@ -1746,17 +1748,52 @@ server <- function(input, output, session) {
       mutate(expected_dia = chance * dia_if_received)
   })
 
+  arms_race_bonus_values <- reactive({
+    model <- currency_model()
+    item_values <- model$direct %>%
+      select(item_key, dia_unit = direct_dia_unit)
+
+    dia_for_item <- function(item_key, comparable_qty = 1) {
+      value <- item_values$dia_unit[match(item_key, item_values$item_key)]
+      ifelse(length(value) == 0 || is.na(value), NA_real_, comparable_qty * value)
+    }
+
+    tier_value <- function(skill_medals, sr_chests_each, five_min_speedups) {
+      dia_for_item("skill medal", skill_medals) +
+        dia_for_item("food resource", sr_chests_each) +
+        dia_for_item("iron resource", sr_chests_each) +
+        dia_for_item("coins resource", sr_chests_each) +
+        dia_for_item("universal speed up hour", five_min_speedups / 12)
+    }
+
+    tibble::tibble(
+      tier = c("1 chest", "2 chests", "3 chests"),
+      stamina = c(15, 100, 300),
+      skill_medals = c(200, 600, 700),
+      sr_chests_each = c(4, 12, 32),
+      five_min_speedups = c(8, 28, 68)
+    ) %>%
+      rowwise() %>%
+      mutate(
+        bonus_dia = tier_value(skill_medals, sr_chests_each, five_min_speedups),
+        dia_per_stam = bonus_dia / stamina
+      ) %>%
+      ungroup()
+  })
+
   stam_known_total <- reactive({
     sum(stam_reward_values()$expected_dia, na.rm = TRUE)
   })
 
   output$stam_bonus_note <- renderUI({
-    if (isTRUE(input$stam_arms_race) || isTRUE(input$stam_monica)) {
-      div(class = "note",
-          "Bonus reward math is not entered yet, so checked bonus boxes are currently informational and this table still shows the no-bonus baseline.")
-    } else {
-      div(class = "note", "Showing no-bonus baseline rewards.")
+    notes <- c("Showing no-bonus Doom Elite rally rewards.")
+    if (isTRUE(input$stam_arms_race)) {
+      notes <- c(notes, "Arms Race bonus tiers are shown below as separate cumulative milestone values.")
     }
+    if (isTRUE(input$stam_monica)) {
+      notes <- c(notes, "Monica bonus reward math is not entered yet, so that checkbox is currently informational.")
+    }
+    div(class = "note", paste(notes, collapse = " "))
   })
 
   output$stam_total_value <- renderText({
@@ -1797,6 +1834,33 @@ server <- function(input, output, session) {
         `Expected DIA` = bold_cell(fmt_num(stam_known_total() / 20, 2)),
         Note = "20 stamina per Doom Elite rally."
       ))
+  }, sanitize.text.function = identity)
+
+  output$arms_race_bonus_heading <- renderUI({
+    if (!isTRUE(input$stam_arms_race)) return(NULL)
+    div(
+      class = "control-card note",
+      strong("Arms Race Bonus Value"),
+      tags$br(),
+      "Each row is cumulative: 2 chests includes the 15-stamina and 100-stamina bonuses; 3 chests includes all three bonus lines."
+    )
+  })
+
+  output$arms_race_bonus_table <- renderTable({
+    if (!isTRUE(input$stam_arms_race)) return(NULL)
+
+    arms_race_bonus_values() %>%
+      transmute(
+        Tier = tier,
+        `Stamina target` = fmt_num(stamina, 0),
+        Rewards = paste0(
+          fmt_num(skill_medals, 0), " Skill Medal + ",
+          fmt_num(sr_chests_each, 0), " each SR Food/Iron/Coin Chest + ",
+          fmt_num(five_min_speedups, 0), " 5-min Speed-Up"
+        ),
+        `Bonus DIA` = fmt_sig(bonus_dia, 3),
+        `Bonus DIA/Stam` = bold_cell(fmt_num(dia_per_stam, 2))
+      )
   }, sanitize.text.function = identity)
 
   train_item_values <- reactive({
