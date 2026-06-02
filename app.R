@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-02 Monica stamina bonus"
+app_build_label <- "Build: 2026-06-02 HQ chest values import"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -136,19 +136,30 @@ duration_hours <- function(item) {
 }
 
 resource_chest_amounts <- function(hq_level = 29) {
-  # Only HQ 29 has explicit quantities so far. Other levels keep this table visible
-  # until level-specific amounts are added.
-  tibble(
-    hq_level = 29,
-    resource = rep(c("iron", "food", "coins"), each = 4),
-    tier = rep(c("r", "sr", "ssr", "ur"), times = 3),
-    amount = c(
-      16560, 165600, 1320000, 3970000,
-      16560, 165600, 1320000, 3970000,
-      9930, 99360, 794880, 2380000
-    )
-  ) %>%
-    filter(hq_level == 29)
+  # Source: Cpt Hedge resource chest calculator, credited there to kp7 from #163.
+  # The calculator exposes common/rare/epic/legendary values; this app maps those
+  # to R/SR/SSR/UR and uses SR as the base unit.
+  sr_values <- tibble::tribble(
+    ~hq_level, ~food, ~iron, ~coins, ~hero_exp,
+    20, 115000, 115000, 68750, 339840,
+    21, 118800, 118800, 71280, 374700,
+    22, 126000, 126000, 75600, 413100,
+    23, 129600, 129600, 77760, 455460,
+    24, 136800, 136800, 82000, 501250,
+    25, 140400, 140400, 84240, 553560,
+    26, 147600, 147600, 88560, 610320,
+    27, 154800, 154800, 92880, 672900,
+    28, 158400, 158400, 95040, 741840,
+    29, 165600, 165600, 99300, 817860,
+    30, 169200, 169200, 101520, 901740
+  )
+
+  sr_values %>%
+    pivot_longer(-hq_level, names_to = "resource", values_to = "sr_amount") %>%
+    tidyr::crossing(tier = c("r", "sr", "ssr", "ur")) %>%
+    mutate(amount = sr_amount * resource_tier_multiplier(tier)) %>%
+    select(hq_level, resource, tier, amount) %>%
+    filter(hq_level == !!hq_level)
 }
 
 detect_tier <- function(key) {
@@ -1738,6 +1749,7 @@ server <- function(input, output, session) {
     iron_50k_value <- dia_for_item("iron resource", 50000 / sr_amount("iron"))
     five_min_speed_value <- dia_for_item("universal speed up hour", 1 / 12)
     s1_gift_chest_value <- 0.70 * iron_50k_value + 0.30 * five_min_speed_value
+    hero_exp_qty <- 683000
     monica_bonus <- isTRUE(input$stam_monica)
     iron_food_qty <- if (monica_bonus) 478500 else 276000
     coin_qty <- if (monica_bonus) 305100 else 176000
@@ -1745,7 +1757,7 @@ server <- function(input, output, session) {
     tibble::tribble(
       ~reward, ~qty_label, ~chance, ~icon_item, ~dia_if_received, ~note,
       "Battle Data", "2.5k", 1, "Battle Data (10k)", dia_for_item("battle data", 2500 / 10000), "",
-      "Hero EXP", "683k", 1, "Hero EXP Chest (SSR)", NA_real_, "Needs raw Hero EXP per chest before DIA value can be computed.",
+      "Hero EXP", fmt_stam_qty(hero_exp_qty), 1, "Hero EXP Chest (SSR)", dia_for_item("hero exp chest sr equivalent", hero_exp_qty / sr_amount("hero_exp")), "Converted through SR Hero EXP chest contents for the selected HQ level.",
       "Iron", fmt_stam_qty(iron_food_qty), 1, "Iron", dia_for_item("iron resource", iron_food_qty / sr_amount("iron")), if_else(monica_bonus, "Includes Monica's Treasure Hunter Lvl 26 resource bonus.", ""),
       "Food", fmt_stam_qty(iron_food_qty), 1, "Food", dia_for_item("food resource", iron_food_qty / sr_amount("food")), if_else(monica_bonus, "Includes Monica's Treasure Hunter Lvl 26 resource bonus.", ""),
       "Coins", fmt_stam_qty(coin_qty), 1, "Coins", dia_for_item("coins resource", coin_qty / sr_amount("coins")), if_else(monica_bonus, "Includes Monica's Treasure Hunter Lvl 26 resource bonus.", ""),
@@ -1835,7 +1847,7 @@ server <- function(input, output, session) {
         Chance = "",
         `DIA if received` = "",
         `Expected DIA` = bold_cell(fmt_sig(stam_known_total(), 3)),
-        Note = "Excludes pending Hero EXP value."
+        Note = "Includes raw Hero EXP conversion for the selected HQ level."
       )) %>%
       bind_rows(tibble(
         Reward = "<strong>Known total per 1 Stamina</strong>",
