@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-01 season storefront update"
+app_build_label <- "Build: 2026-06-02 stamina purchase tab"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1037,6 +1037,7 @@ item_icon <- function(item, item_key = "") {
     str_detect(item_l, "decoration chest") ~ icon_or_badge("decoration-chest-ur.svg", "DEC", "decor", "Decoration chest"),
     item_l == "valor badge" ~ icon_or_badge("valor-badge.webp", "VAL", "badge", "Valor badge"),
     item_l == "survivor s token" ~ icon_or_badge("survivor-token.svg", "TOK", "token", "Survivor's Token"),
+    item_l == "diamonds" ~ icon_or_badge("diamonds.svg", "DIA", "diamond", "Diamonds"),
     str_detect(item_l, "skill chip chest") & str_detect(item_l, "\\bur\\b") ~ icon_or_badge("skill-chip-chest-ur.svg", "UR", "chip", "Skill Chip Chest (UR)"),
     str_detect(item_l, "skill chip chest") & str_detect(item_l, "\\bssr\\b") ~ icon_or_badge("skill-chip-chest-ssr.svg", "SSR", "chip", "Skill Chip Chest (SSR)"),
     str_detect(item_l, "skill chip chest") & str_detect(item_l, "\\bsr\\b") ~ icon_or_badge("skill-chip-chest-sr.svg", "SR", "chip", "Skill Chip Chest (SR)"),
@@ -1059,6 +1060,7 @@ item_icon <- function(item, item_key = "") {
     item_l == "profession skill reset book" ~ icon_badge("SKL", "badge", "Profession Skill Reset Book"),
     item_l == "sandstorm master permanent" ~ icon_badge("SAN", "decor", "Sandstorm Master (Permanent)"),
     item_l == "ur hero badge" ~ icon_badge("UR", "badge", "UR Hero Badge"),
+    item_l == "s1 gift chest" ~ icon_badge("S1", "chest", "S1 Gift Chest"),
     item_l == "ssr gear chest" ~ icon_or_badge("gear-chest-ssr.svg", "SSR", "gear", "SSR Gear Chest"),
     item_l == "gear chest sr" ~ icon_or_badge("gear-chest-sr.svg", "SR", "gear", "Gear Chest (SR)"),
     item_l == "ur campaign chest" | item_l == "campaign chest ur" ~ icon_or_badge("campaign-chest-ur.svg", "UR", "chest", "UR Campaign Chest"),
@@ -1368,6 +1370,34 @@ ui <- fluidPage(
                    column(6, uiOutput("saved_train_cars"))
                  ),
                  uiOutput("train_inputs")),
+        tabPanel("Stam Purch",
+                 conditionalPanel(
+                   condition = "input.season == 'Preseason'",
+                   div(class = "control-card note",
+                       strong("Season 1 only."),
+                       tags$br(),
+                       "Doom Elite stamina purchase values are currently entered only for Season 1.")
+                 ),
+                 conditionalPanel(
+                   condition = "input.season != 'Preseason'",
+                   div(class = "control-card note",
+                       "Doom Elite rally value assumes a 20 stamina rally cost. Reward values use the same inferred network prices as the rest of the guide."),
+                   fluidRow(
+                     column(4,
+                            div(class = "control-card",
+                                checkboxInput("stam_arms_race", "include Arms Race bonuses?", value = FALSE),
+                                checkboxInput("stam_monica", "Include Monica's Treasure Hunter Lvl 26?", value = FALSE),
+                                uiOutput("stam_bonus_note")
+                            )),
+                     column(8,
+                            fluidRow(
+                              column(4, div(class = "metric", div(class = "label", "Stamina cost"), div(class = "value", "20"))),
+                              column(4, div(class = "metric", div(class = "label", "Known DIA value"), div(class = "value", textOutput("stam_total_value", inline = TRUE)))),
+                              column(4, div(class = "metric", div(class = "label", "Known DIA / Stam"), div(class = "value", textOutput("stam_value_per_stam", inline = TRUE))))
+                            ))
+                   ),
+                   tableOutput("stam_table")
+                 )),
         tabPanel("Currency Conversion Model",
                  h3("Inferred Exchange Rates"),
                  tableOutput("rates_table"),
@@ -1671,6 +1701,102 @@ server <- function(input, output, session) {
         `Normal DIA/unit` = fmt_num(view_normal_effective_dia_unit, 2),
         `Value vs normal` = deal_badge(view_normal_value_ratio)
       )
+  }, sanitize.text.function = identity)
+
+  stam_reward_values <- reactive({
+    model <- currency_model()
+    item_values <- model$direct %>%
+      select(item_key, dia_unit = direct_dia_unit)
+
+    dia_for_item <- function(item_key, comparable_qty = 1) {
+      value <- item_values$dia_unit[match(item_key, item_values$item_key)]
+      ifelse(length(value) == 0 || is.na(value), NA_real_, comparable_qty * value)
+    }
+
+    sr_amount <- function(resource) {
+      amount <- resource_chest_amounts(input$hq_level) %>%
+        filter(resource == !!resource, tier == "sr") %>%
+        pull(amount)
+      if (!length(amount) || is.na(amount)) {
+        amount <- resource_chest_amounts(29) %>%
+          filter(resource == !!resource, tier == "sr") %>%
+          pull(amount)
+      }
+      amount
+    }
+
+    iron_50k_value <- dia_for_item("iron resource", 50000 / sr_amount("iron"))
+    five_min_speed_value <- dia_for_item("universal speed up hour", 1 / 12)
+    s1_gift_chest_value <- 0.70 * iron_50k_value + 0.30 * five_min_speed_value
+
+    tibble::tribble(
+      ~reward, ~qty_label, ~chance, ~icon_item, ~dia_if_received, ~note,
+      "Battle Data", "2.5k", 1, "Battle Data (10k)", dia_for_item("battle data", 2500 / 10000), "",
+      "Hero EXP", "683k", 1, "Hero EXP Chest (SSR)", NA_real_, "Needs raw Hero EXP per chest before DIA value can be computed.",
+      "Iron", "276k", 1, "Iron", dia_for_item("iron resource", 276000 / sr_amount("iron")), "",
+      "Food", "276k", 1, "Food", dia_for_item("food resource", 276000 / sr_amount("food")), "",
+      "Coins", "176k", 1, "Coins", dia_for_item("coins resource", 176000 / sr_amount("coins")), "",
+      "Diamonds", "20", 1 / 3, "Diamonds", 20, "",
+      "Hero Recruitment Ticket", "1", 1 / 3, "Hero Recruitment Ticket", dia_for_item("hero recruitment ticket", 1), "",
+      "Gear Chest (SR)", "1", 1 / 3, "Gear Chest (SR)", dia_for_item("superalloy equivalent", 40), "Train-calculator equivalence: 1 SR gear chest = 40 Superalloy.",
+      "5-min Speed-Ups", "2", 1 / 3, "5m Speed-Up Chest", dia_for_item("universal speed up hour", 2 / 12), "",
+      "Survivor Recruitment Ticket", "1", 1 / 3, "Survivor Recruitment Ticket", dia_for_item("survivor recruitment ticket", 1), "",
+      "S1 Gift Chest", "1", 1 / 3, "S1 Gift Chest", s1_gift_chest_value, "Chest EV: 70% 50k iron, 30% 5-min speed-up."
+    ) %>%
+      mutate(expected_dia = chance * dia_if_received)
+  })
+
+  stam_known_total <- reactive({
+    sum(stam_reward_values()$expected_dia, na.rm = TRUE)
+  })
+
+  output$stam_bonus_note <- renderUI({
+    if (isTRUE(input$stam_arms_race) || isTRUE(input$stam_monica)) {
+      div(class = "note",
+          "Bonus reward math is not entered yet, so checked bonus boxes are currently informational and this table still shows the no-bonus baseline.")
+    } else {
+      div(class = "note", "Showing no-bonus baseline rewards.")
+    }
+  })
+
+  output$stam_total_value <- renderText({
+    paste0(fmt_sig(stam_known_total(), 3), " DIA")
+  })
+
+  output$stam_value_per_stam <- renderText({
+    paste0(fmt_num(stam_known_total() / 20, 2), " DIA")
+  })
+
+  output$stam_table <- renderTable({
+    fmt_dia_or_pending <- function(x) {
+      ifelse(is.na(x), "Pending", fmt_sig(x, 3))
+    }
+
+    stam_reward_values() %>%
+      transmute(
+        Reward = item_cell(reward, icon_item),
+        Qty = qty_label,
+        Chance = paste0(fmt_num(100 * chance, 1), "%"),
+        `DIA if received` = fmt_dia_or_pending(dia_if_received),
+        `Expected DIA` = fmt_dia_or_pending(expected_dia),
+        Note = note
+      ) %>%
+      bind_rows(tibble(
+        Reward = "<strong>Known total per Doom Elite rally</strong>",
+        Qty = "",
+        Chance = "",
+        `DIA if received` = "",
+        `Expected DIA` = bold_cell(fmt_sig(stam_known_total(), 3)),
+        Note = "Excludes pending Hero EXP value."
+      )) %>%
+      bind_rows(tibble(
+        Reward = "<strong>Known total per 1 Stamina</strong>",
+        Qty = "",
+        Chance = "",
+        `DIA if received` = "",
+        `Expected DIA` = bold_cell(fmt_num(stam_known_total() / 20, 2)),
+        Note = "20 stamina per Doom Elite rally."
+      ))
   }, sanitize.text.function = identity)
 
   train_item_values <- reactive({
