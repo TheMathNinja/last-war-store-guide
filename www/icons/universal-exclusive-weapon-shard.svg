@@ -1,12 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="4" fill="#e9862c"/>
-  <ellipse cx="32" cy="52" rx="22" ry="5" fill="#6b330f" opacity=".22"/>
-  <path d="M14 42c6-15 18-26 36-33-4 17-15 30-30 39Z" fill="#ffd45a" stroke="#8a4b10" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M20 43c6-12 16-21 29-28-4 12-13 23-25 30Z" fill="#f6a721" opacity=".85"/>
-  <path d="M18 45 8 55l10-2 5-7Z" fill="#e36f1f" stroke="#8a4b10" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M29 25c6-3 13-5 20-6" stroke="#fff2a8" stroke-width="4" stroke-linecap="round"/>
-  <path d="M21 48c9-4 18-11 26-22" stroke="#7b3f13" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
-  <circle cx="25" cy="38" r="8" fill="#f5c15d" stroke="#7f4213" stroke-width="3"/>
-  <path d="M19 38h12M25 32v12" stroke="#7f4213" stroke-width="3" stroke-linecap="round"/>
-  <text x="52" y="57" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2" paint-order="stroke">1</text>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#ff9a34"/>
+      <stop offset="1" stop-color="#df741f"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff2a6"/>
+      <stop offset=".45" stop-color="#f2a922"/>
+      <stop offset="1" stop-color="#8f4b13"/>
+    </linearGradient>
+    <linearGradient id="helmet" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff4ad"/>
+      <stop offset=".52" stop-color="#d88b17"/>
+      <stop offset="1" stop-color="#5a3414"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1.5" dy="2" stdDeviation="1.1" flood-color="#3b210c" flood-opacity=".55"/>
+    </filter>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="3" fill="url(#bg)" stroke="#6a4124" stroke-width="1.5"/>
+  <ellipse cx="32" cy="52" rx="22" ry="5" fill="#4b280c" opacity=".22"/>
+  <g filter="url(#shadow)" transform="rotate(-8 32 32)">
+    <path d="M18 14h28l4 5v33H17V17Z" fill="url(#card)" stroke="#6f3a12" stroke-width="2"/>
+    <path d="M21 18h23l2 3v27H21Z" fill="#f4b33c" stroke="#ffe18a" stroke-width="1"/>
+    <path d="M24 20h17l3 3c-6 2-13 2-20 0Z" fill="#fff1a2" opacity=".75"/>
+    <path d="M22 44c6-9 13-14 23-17-3 9-9 16-18 21Z" fill="#7b3f13" opacity=".35"/>
+    <path d="M26 34c1-8 6-14 14-17 4 5 5 11 3 19-3-4-7-5-12-4-1 5-1 9 1 13-5-2-7-6-6-11Z" fill="url(#helmet)" stroke="#5e3210" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M31 25c5-1 9-3 12-6" stroke="#fff1a0" stroke-width="2.7" stroke-linecap="round"/>
+    <path d="M27 35c5 2 11 1 17-2" stroke="#4a2a12" stroke-width="2" stroke-linecap="round"/>
+    <path d="M23 48c9-3 17-9 24-19" stroke="#fff0a3" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+  </g>
+  <text x="58" y="58" text-anchor="end" font-family="Arial Black, Arial, sans-serif" font-size="16" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2.8" paint-order="stroke">10</text>
 </svg>
