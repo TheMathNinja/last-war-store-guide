@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-03 train low tier cleanup"
+app_build_label <- "Build: 2026-06-03 train brown tier update"
 icon_cache_bust <- "20260603a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1259,14 +1259,16 @@ train_items <- function(hq_level = 29) {
   low_tier_ids <- c(
     "alliance_contribution_500",
     "alliance_contribution_1000",
-    "battle_data_1",
+    "battle_data_4",
+    "drone_parts_2",
+    "speed_5m_10",
     "upgrade_ore_500",
     "sr_resource_chest_4",
     "sr_resource_chest_6",
     "ssr_coin_chest_1",
     "resource_chest_25",
     "resource_chest_40",
-    "ssr_resource_chest_2",
+    "ssr_coin_chest_2",
     "sr_resource_chest_24",
     "gear_r_1",
     "upgrade_ore_1000"
@@ -1302,14 +1304,16 @@ train_items <- function(hq_level = 29) {
     "dielectric_ceramic_50", "Dielectric Ceramic (x50)", "Dielectric Ceramic", "50", "item", "superalloy equivalent", 50 * 16, NA_character_, NA_real_,
     "alliance_contribution_500", "Alliance Contribution (x500)", "Alliance Contribution Purple", "500", "currency", NA_character_, 500, "ALL", NA_real_,
     "alliance_contribution_1000", "Alliance Contribution (x1000)", "Alliance Contribution", "1.0k", "currency", NA_character_, 1000, "ALL", NA_real_,
-    "battle_data_1", "10k Battle Data (x1)", "Battle Data (10k)", "1", "item", "battle data", 1, NA_character_, NA_real_,
+    "battle_data_4", "10k Battle Data (x4)", "Battle Data (10k)", "4", "item", "battle data", 4, NA_character_, NA_real_,
+    "drone_parts_2", "Drone Parts (x2)", "Drone Parts", "2", "item", "drone parts", 2, NA_character_, NA_real_,
+    "speed_5m_10", "5-min Speed Up Chest (x10)", "5m Speed Up Chest", "10", "item", "construction speed up hour", 10 * 5 / 60, NA_character_, NA_real_,
     "upgrade_ore_500", "Upgrade Ore (x500)", "Upgrade Ore", "500", "item", "upgrade ore", 500, NA_character_, NA_real_,
     "sr_resource_chest_4", "SR Food/Iron/Coin Chest (x4)", "SR Food/Iron/Coin Chest", "4", "item", "coins resource", 4 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
     "sr_resource_chest_6", "SR Food/Iron/Coin Chest (x6)", "SR Food/Iron/Coin Chest", "6", "item", "coins resource", 6 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
     "ssr_coin_chest_1", "SSR Coin Chest (x1)", "SSR Coin Chest", "1", "item", "coins resource", resource_tier_multiplier("ssr"), NA_character_, NA_real_,
     "resource_chest_25", "Resource Chest (x25)", "Resource Chest (SR)", "25", "item", "food resource", 25 * 10000 / sr_food, NA_character_, NA_real_,
     "resource_chest_40", "Resource Chest (x40)", "Resource Chest (SR)", "40", "item", "food resource", 40 * 10000 / sr_food, NA_character_, NA_real_,
-    "ssr_resource_chest_2", "SSR Food/Iron/Coin Chest (x2)", "Resource Choice Chest (SSR)", "2", "item", "coins resource", 2 * resource_tier_multiplier("ssr"), NA_character_, NA_real_,
+    "ssr_coin_chest_2", "SSR Coin Chest (x2)", "SSR Coin Chest", "2", "item", "coins resource", 2 * resource_tier_multiplier("ssr"), NA_character_, NA_real_,
     "sr_resource_chest_24", "SR Food/Iron/Coin Chest (x24)", "SR Food/Iron/Coin Chest", "24", "item", "coins resource", 24 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
     "gear_r_1", "Gear Chest (R) (x1)", "Gear Chest (R)", "1", "item", "superalloy equivalent", 10, NA_character_, NA_real_,
     "upgrade_ore_1000", "Upgrade Ore (x1.0k)", "Upgrade Ore", "1.0k", "item", "upgrade ore", 1000, NA_character_, NA_real_
