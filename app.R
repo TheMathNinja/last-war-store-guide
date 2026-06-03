@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-02 lower train tier"
+app_build_label <- "Build: 2026-06-02 SR shard anchor"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -417,6 +417,19 @@ normalize_one_listing <- function(row, hq_level = 29) {
       flexibility_rank = if_else(key == "hero choice chest", 0L, 1L),
       anchor_group = item_key,
       normalization_note = "Hero choice chests and UR universal shards are treated as equivalent for now."
+    ))
+  }
+
+  if (key %in% c("sr hero universal shard", "ssr hero universal shard")) {
+    shard_tier <- if_else(str_detect(key, "\\bssr\\b"), "SSR", "SR")
+    return(tibble(
+      item_key = paste0(str_to_lower(shard_tier), " hero shard equivalent"),
+      item_canonical = paste0(shard_tier, " Hero Shard Equivalent"),
+      comparable_qty = qty,
+      comparable_unit = "shard",
+      flexibility_rank = 1L,
+      anchor_group = item_key,
+      normalization_note = paste0(shard_tier, " hero universal shards are treated as the base ", shard_tier, " shard item.")
     ))
   }
 
