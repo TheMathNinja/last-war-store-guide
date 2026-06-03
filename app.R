@@ -5,8 +5,8 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-02 SR shard anchor"
-icon_cache_bust <- "20260530a"
+app_build_label <- "Build: 2026-06-02 season store icons"
+icon_cache_bust <- "20260602a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {
@@ -1076,14 +1076,14 @@ item_icon <- function(item, item_key = "") {
     str_detect(item_l, "hero exp") ~ icon_or_badge("hero-exp-ssr.svg", "EXP", "hero", "Hero EXP"),
     item_l == "profession exp" ~ icon_badge("EXP", "hero", "Profession EXP"),
     item_l == "recruitment orders" ~ icon_badge("ORD", "ticket", "Recruitment Orders"),
-    item_l == "s1 skill point" ~ icon_badge("S1", "badge", "S1 Skill Point"),
+    item_l == "s1 skill point" ~ icon_or_badge("season-s1-skill-point.svg", "S1", "badge", "S1 Skill Point"),
     item_l == "mutant crystals" ~ icon_badge("MUT", "material", "Mutant Crystals"),
-    item_l == "dominance sanctuary permanent" ~ icon_badge("SAN", "decor", "Dominance Sanctuary (Permanent)"),
-    item_l == "god of judgment" ~ icon_badge("GOD", "decor", "God of Judgment"),
-    item_l == "profession change certificate" ~ icon_badge("JOB", "badge", "Profession Change Certificate"),
-    item_l == "profession skill reset book" ~ icon_badge("SKL", "badge", "Profession Skill Reset Book"),
-    item_l == "sandstorm master permanent" ~ icon_badge("SAN", "decor", "Sandstorm Master (Permanent)"),
-    item_l == "ur hero badge" ~ icon_badge("UR", "badge", "UR Hero Badge"),
+    item_l == "dominance sanctuary permanent" ~ icon_or_badge("season-dominance-sanctuary.svg", "SAN", "decor", "Dominance Sanctuary (Permanent)"),
+    item_l == "god of judgment" ~ icon_or_badge("season-god-of-judgment.svg", "GOD", "decor", "God of Judgment"),
+    item_l == "profession change certificate" ~ icon_or_badge("season-profession-change.svg", "JOB", "badge", "Profession Change Certificate"),
+    item_l == "profession skill reset book" ~ icon_or_badge("season-profession-reset.svg", "SKL", "badge", "Profession Skill Reset Book"),
+    item_l == "sandstorm master permanent" ~ icon_or_badge("season-sandstorm-master.svg", "SAN", "decor", "Sandstorm Master (Permanent)"),
+    item_l == "ur hero badge" ~ icon_or_badge("season-ur-hero-badge.svg", "UR", "badge", "UR Hero Badge"),
     item_l == "s1 gift chest" ~ icon_badge("S1", "chest", "S1 Gift Chest"),
     item_l == "ssr gear chest" ~ icon_or_badge("gear-chest-ssr.svg", "SSR", "gear", "SSR Gear Chest"),
     item_l == "gear chest sr" ~ icon_or_badge("gear-chest-sr.svg", "SR", "gear", "Gear Chest (SR)"),
