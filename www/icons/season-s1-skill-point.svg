@@ -1,7 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="4" fill="#f08b2f"/>
-  <path d="M16 25 32 15l16 10v18L32 53 16 43Z" fill="#ffb24f" stroke="#9a4c18" stroke-width="2"/>
-  <path d="M25 31h14M25 37h9" stroke="#fff2c0" stroke-width="3" stroke-linecap="round"/>
-  <text x="32" y="44" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="800" fill="#9a4c18">Skill</text>
-  <text x="45" y="47" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#22c55e">S1</text>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#ff9a34"/>
+      <stop offset="1" stop-color="#e67822"/>
+    </linearGradient>
+    <linearGradient id="token" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffe6a7"/>
+      <stop offset=".52" stop-color="#ffbc55"/>
+      <stop offset="1" stop-color="#d86f22"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1.4" dy="2" stdDeviation="1.2" flood-color="#57310d" flood-opacity=".45"/>
+    </filter>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="3" fill="url(#bg)" stroke="#6a4124" stroke-width="1.5"/>
+  <g filter="url(#shadow)">
+    <path d="M17 23.5 33 14l16 9.5v17L33 50 17 40.5Z" fill="url(#token)" stroke="#8f4a17" stroke-width="1.8"/>
+    <path d="M22.5 27.5 33 21l10.5 6.5v10L33 44l-10.5-6.5Z" fill="#ffc965" stroke="#f8e4aa" stroke-width="1"/>
+    <path d="M27 29.5h12M25.5 34.5h15M29 39.5h8" stroke="#8f4a17" stroke-width="2.2" stroke-linecap="round"/>
+    <text x="33" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="8.5" font-style="italic" font-weight="900" fill="#e65f1b">Skill</text>
+  </g>
+  <text x="41" y="49" font-family="Arial Black, Arial, sans-serif" font-size="18" font-weight="900" fill="#1fd253" stroke="#0c7c28" stroke-width=".6">S1</text>
+  <text x="58" y="59" text-anchor="end" font-family="Arial Black, Arial, sans-serif" font-size="16" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2.6" paint-order="stroke">1</text>
 </svg>
