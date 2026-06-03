@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-02 HQ chest values import"
+app_build_label <- "Build: 2026-06-02 lower train tier"
 icon_cache_bust <- "20260530a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1074,6 +1074,7 @@ item_icon <- function(item, item_key = "") {
     item_l == "s1 gift chest" ~ icon_badge("S1", "chest", "S1 Gift Chest"),
     item_l == "ssr gear chest" ~ icon_or_badge("gear-chest-ssr.svg", "SSR", "gear", "SSR Gear Chest"),
     item_l == "gear chest sr" ~ icon_or_badge("gear-chest-sr.svg", "SR", "gear", "Gear Chest (SR)"),
+    item_l == "gear chest r" ~ icon_badge("R", "gear", "Gear Chest (R)"),
     item_l == "ur campaign chest" | item_l == "campaign chest ur" ~ icon_or_badge("campaign-chest-ur.svg", "UR", "chest", "UR Campaign Chest"),
     item_l == "luxury choice chest" ~ icon_or_badge("choice-chest-luxury.svg", "LUX", "chest", "Luxury Choice Chest"),
     item_l == "deluxe choice chest" ~ icon_or_badge("choice-chest-deluxe.svg", "DEL", "chest", "Deluxe Choice Chest"),
@@ -1239,8 +1240,24 @@ train_items <- function(hq_level = 29) {
     "upgrade_ore_2500",
     "dielectric_ceramic_50",
     "drone_parts_6",
-    "ur_hero_shard_2",
-    "drone_component_lv3_1"
+    "ur_hero_shard_2"
+  )
+  low_tier_ids <- c(
+    "alliance_contribution_500",
+    "alliance_contribution_1000",
+    "battle_data_1",
+    "upgrade_ore_500",
+    "sr_hero_shard_1",
+    "sr_resource_chest_4",
+    "sr_resource_chest_6",
+    "ssr_coin_chest_1",
+    "resource_chest_15",
+    "resource_chest_25",
+    "resource_chest_40",
+    "ssr_resource_chest_2",
+    "sr_resource_chest_24",
+    "gear_r_1",
+    "upgrade_ore_1000"
   )
 
   tibble::tribble(
@@ -1254,7 +1271,7 @@ train_items <- function(hq_level = 29) {
     "gear_ssr_1", "SSR Gear Chest (x1)", "SSR Gear Chest", "1", "item", "superalloy equivalent", 150 * 4, NA_character_, NA_real_,
     "gear_sr_1", "Gear Chest (SR) (x1)", "Gear Chest SR", "1", "item", "superalloy equivalent", 40, NA_character_, NA_real_,
     "ur_decoration_1", "UR Decoration Chest (x1)", "Decoration Chest (UR)", "1", "item", "universal decor component equivalent", 130, NA_character_, NA_real_,
-    "alliance_contribution_2500", "Alliance Contribution (x2500)", "Alliance Contribution", "2.5k", "currency", NA_character_, 2500, "ALL", NA_real_,
+    "alliance_contribution_2500", "Alliance Contribution (x2.5k)", "Alliance Contribution", "2.5k", "currency", NA_character_, 2500, "ALL", NA_real_,
     "ur_resource_choice_3", "UR Resource Choice Chest (x3)", "Resource Choice Chest (UR)", "3", "item", "food resource", 3 * resource_tier_multiplier("ur"), NA_character_, NA_real_,
     "ur_hero_shard_1", "UR Universal Hero Shard (x1)", "UR Hero Universal Shard", "1", "item", "ur hero shard equivalent", 1, NA_character_, NA_real_,
     "sr_hero_exp_32", "SR Hero EXP Chest (x32)", "Hero EXP Chest (SR)", "32", "item", "hero exp chest sr equivalent", 32, NA_character_, NA_real_,
@@ -1270,11 +1287,34 @@ train_items <- function(hq_level = 29) {
     "skill_medal_2400", "Skill Medal (x2.4k)", "Skill Medal", "2.4k", "item", "skill medal", 2400, NA_character_, NA_real_,
     "skill_medal_3000", "Skill Medal (x3.0k)", "Skill Medal", "3.0k", "item", "skill medal", 3000, NA_character_, NA_real_,
     "universal_decor_component_20", "Universal Decor Component (x20)", "Universal Decor Component", "20", "item", "universal decor component equivalent", 20, NA_character_, NA_real_,
-    "dielectric_ceramic_50", "Dielectric Ceramic (x50)", "Dielectric Ceramic", "50", "item", "superalloy equivalent", 50 * 16, NA_character_, NA_real_
+    "dielectric_ceramic_50", "Dielectric Ceramic (x50)", "Dielectric Ceramic", "50", "item", "superalloy equivalent", 50 * 16, NA_character_, NA_real_,
+    "alliance_contribution_500", "Alliance Contribution (x500)", "Alliance Contribution", "500", "currency", NA_character_, 500, "ALL", NA_real_,
+    "alliance_contribution_1000", "Alliance Contribution (x1000)", "Alliance Contribution", "1.0k", "currency", NA_character_, 1000, "ALL", NA_real_,
+    "battle_data_1", "10k Battle Data (x1)", "Battle Data (10k)", "1", "item", "battle data", 1, NA_character_, NA_real_,
+    "upgrade_ore_500", "Upgrade Ore (x500)", "Upgrade Ore", "500", "item", "upgrade ore", 500, NA_character_, NA_real_,
+    "sr_hero_shard_1", "SR Hero Shard (x1)", "SR Hero Universal Shard", "1", "item", "sr hero shard equivalent", 1, NA_character_, NA_real_,
+    "sr_resource_chest_4", "SR Food/Iron/Coin Chest (x4)", "SR Food/Iron/Coin Chest", "4", "item", "coins resource", 4 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
+    "sr_resource_chest_6", "SR Food/Iron/Coin Chest (x6)", "SR Food/Iron/Coin Chest", "6", "item", "coins resource", 6 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
+    "ssr_coin_chest_1", "SSR Coin Chest (x1)", "SSR Coin Chest", "1", "item", "coins resource", resource_tier_multiplier("ssr"), NA_character_, NA_real_,
+    "resource_chest_15", "Resource Chest (x15)", "Resource Chest (SR)", "15", "item", "food resource", 15 * 10000 / sr_food, NA_character_, NA_real_,
+    "resource_chest_25", "Resource Chest (x25)", "Resource Chest (SR)", "25", "item", "food resource", 25 * 10000 / sr_food, NA_character_, NA_real_,
+    "resource_chest_40", "Resource Chest (x40)", "Resource Chest (SR)", "40", "item", "food resource", 40 * 10000 / sr_food, NA_character_, NA_real_,
+    "ssr_resource_chest_2", "SSR Food/Iron/Coin Chest (x2)", "Resource Choice Chest (SSR)", "2", "item", "coins resource", 2 * resource_tier_multiplier("ssr"), NA_character_, NA_real_,
+    "sr_resource_chest_24", "SR Food/Iron/Coin Chest (x24)", "SR Food/Iron/Coin Chest", "24", "item", "coins resource", 24 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
+    "gear_r_1", "Gear Chest (R) (x1)", "Gear Chest (R)", "1", "item", "superalloy equivalent", 4, NA_character_, NA_real_,
+    "upgrade_ore_1000", "Upgrade Ore (x1.0k)", "Upgrade Ore", "1.0k", "item", "upgrade ore", 1000, NA_character_, NA_real_
   ) %>%
     mutate(
-      tier = if_else(id %in% top_tier_ids, "top", "standard"),
-      tier_rank = if_else(tier == "top", 1L, 2L),
+      tier = case_when(
+        id %in% top_tier_ids ~ "top",
+        id %in% low_tier_ids ~ "low",
+        TRUE ~ "standard"
+      ),
+      tier_rank = case_when(
+        tier == "top" ~ 1L,
+        tier == "standard" ~ 2L,
+        TRUE ~ 3L
+      ),
       original_order = row_number()
     ) %>%
     arrange(tier_rank, label)
@@ -1952,7 +1992,14 @@ server <- function(input, output, session) {
                 step = 1
               )
             ),
-            div(class = "train-item-value", paste0("Value: ~", fmt_dia_equiv(item$dia_each), " Diamonds"))
+            div(
+              class = "train-item-value",
+              if (is.na(item$dia_each)) {
+                "Value: pending"
+              } else {
+                paste0("Value: ~", fmt_dia_equiv(item$dia_each), " Diamonds")
+              }
+            )
           )
         })
     )

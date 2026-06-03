@@ -30,6 +30,9 @@ h1 { font-size: 30px; font-weight: 750; margin: 0 0 6px; letter-spacing: 0; }
 .train-item { background: white; border: 1px solid #dfe4ea; border-radius: 8px; padding: 10px; }
 .train-item-top { background: linear-gradient(135deg, #fff7d6 0%, #ffe19a 42%, #fff3bf 100%); border-color: #e2b84f; box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
 .train-item-standard { background: #ffffff; }
+.train-item-low { background: linear-gradient(135deg, #f6dfc5 0%, #d88a3d 48%, #8a4f24 100%); border-color: #a9612d; box-shadow: inset 0 1px 0 rgba(255,255,255,.45); }
+.train-item-low .control-label,
+.train-item-low .train-item-value { color: #2d1b12; }
 .train-qty-control { background: transparent; border: 0; border-radius: 6px; padding: 0; margin: 0; }
 .train-qty-control .form-control { background: #ffffff; border-color: #cfd8e3; font-weight: 700; }
 .train-slot-empty .form-control { background: #ffffff; border-color: #cfd8e3; color: #223142; }
