@@ -1314,7 +1314,7 @@ train_items <- function(hq_level = 29) {
     "resource_chest_40", "Resource Chest (x40)", "Resource Chest (SR)", "40", "item", "food resource", 40 * 10000 / sr_food, NA_character_, NA_real_,
     "ssr_resource_chest_2", "SSR Food/Iron/Coin Chest (x2)", "Resource Choice Chest (SSR)", "2", "item", "coins resource", 2 * resource_tier_multiplier("ssr"), NA_character_, NA_real_,
     "sr_resource_chest_24", "SR Food/Iron/Coin Chest (x24)", "SR Food/Iron/Coin Chest", "24", "item", "coins resource", 24 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
-    "gear_r_1", "Gear Chest (R) (x1)", "Gear Chest (R)", "1", "item", "superalloy equivalent", 4, NA_character_, NA_real_,
+    "gear_r_1", "Gear Chest (R) (x1)", "Gear Chest (R)", "1", "item", "superalloy equivalent", 10, NA_character_, NA_real_,
     "upgrade_ore_1000", "Upgrade Ore (x1.0k)", "Upgrade Ore", "1.0k", "item", "upgrade ore", 1000, NA_character_, NA_real_
   ) %>%
     mutate(
