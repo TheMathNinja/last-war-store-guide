@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-03 train lower tier polish"
+app_build_label <- "Build: 2026-06-03 train low tier cleanup"
 icon_cache_bust <- "20260603a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1261,12 +1261,9 @@ train_items <- function(hq_level = 29) {
     "alliance_contribution_1000",
     "battle_data_1",
     "upgrade_ore_500",
-    "sr_hero_shard_1",
     "sr_resource_chest_4",
     "sr_resource_chest_6",
     "ssr_coin_chest_1",
-    "resource_chest_15",
-    "resource_chest_20",
     "resource_chest_25",
     "resource_chest_40",
     "ssr_resource_chest_2",
@@ -1307,12 +1304,9 @@ train_items <- function(hq_level = 29) {
     "alliance_contribution_1000", "Alliance Contribution (x1000)", "Alliance Contribution", "1.0k", "currency", NA_character_, 1000, "ALL", NA_real_,
     "battle_data_1", "10k Battle Data (x1)", "Battle Data (10k)", "1", "item", "battle data", 1, NA_character_, NA_real_,
     "upgrade_ore_500", "Upgrade Ore (x500)", "Upgrade Ore", "500", "item", "upgrade ore", 500, NA_character_, NA_real_,
-    "sr_hero_shard_1", "SR Hero Shard (x1)", "SR Hero Universal Shard", "1", "item", "sr hero shard equivalent", 1, NA_character_, NA_real_,
     "sr_resource_chest_4", "SR Food/Iron/Coin Chest (x4)", "SR Food/Iron/Coin Chest", "4", "item", "coins resource", 4 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
     "sr_resource_chest_6", "SR Food/Iron/Coin Chest (x6)", "SR Food/Iron/Coin Chest", "6", "item", "coins resource", 6 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
     "ssr_coin_chest_1", "SSR Coin Chest (x1)", "SSR Coin Chest", "1", "item", "coins resource", resource_tier_multiplier("ssr"), NA_character_, NA_real_,
-    "resource_chest_15", "Resource Chest (x15)", "Resource Chest (SR)", "15", "item", "food resource", 15 * 10000 / sr_food, NA_character_, NA_real_,
-    "resource_chest_20", "Resource Chest (x20)", "Resource Chest (SR)", "20", "item", "food resource", 20 * 10000 / sr_food, NA_character_, NA_real_,
     "resource_chest_25", "Resource Chest (x25)", "Resource Chest (SR)", "25", "item", "food resource", 25 * 10000 / sr_food, NA_character_, NA_real_,
     "resource_chest_40", "Resource Chest (x40)", "Resource Chest (SR)", "40", "item", "food resource", 40 * 10000 / sr_food, NA_character_, NA_real_,
     "ssr_resource_chest_2", "SSR Food/Iron/Coin Chest (x2)", "Resource Choice Chest (SSR)", "2", "item", "coins resource", 2 * resource_tier_multiplier("ssr"), NA_character_, NA_real_,
