@@ -1075,7 +1075,7 @@ item_icon <- function(item, item_key = "") {
     str_detect(item_l, "hero exp") & str_detect(item_l, "\\bssr\\b") ~ icon_or_badge("hero-exp-ssr.svg", "EXP", "hero", "Hero EXP Chest (SSR)"),
     str_detect(item_l, "hero exp") & str_detect(item_l, "\\bsr\\b") ~ icon_or_badge("hero-exp-sr.svg", "EXP", "hero", "Hero EXP Chest (SR)"),
     str_detect(item_l, "hero exp") ~ icon_or_badge("hero-exp-ssr.svg", "EXP", "hero", "Hero EXP"),
-    item_l == "profession exp" ~ icon_badge("EXP", "hero", "Profession EXP"),
+    item_l == "profession exp" ~ icon_or_badge("profession-exp.svg", "EXP", "hero", "Profession EXP"),
     item_l == "recruitment orders" ~ icon_or_badge("recruitment-orders.svg", "ORD", "ticket", "Recruitment Orders"),
     item_l == "s1 skill point" ~ icon_or_badge("season-s1-skill-point.svg", "S1", "badge", "S1 Skill Point"),
     item_l == "mutant crystals" ~ icon_badge("MUT", "material", "Mutant Crystals"),
