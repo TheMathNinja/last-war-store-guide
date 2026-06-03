@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-03 train brown tier update"
+app_build_label <- "Build: 2026-06-03 stamina purchase thresholds"
 icon_cache_bust <- "20260603a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1436,7 +1436,7 @@ ui <- fluidPage(
                    column(6, uiOutput("saved_train_cars"))
                  ),
                  uiOutput("train_inputs")),
-        tabPanel("Stam Purch",
+        tabPanel("Stamina",
                  conditionalPanel(
                    condition = "input.season == 'Preseason'",
                    div(class = "control-card note",
@@ -1447,7 +1447,7 @@ ui <- fluidPage(
                  conditionalPanel(
                    condition = "input.season != 'Preseason'",
                    div(class = "control-card note",
-                       "Doom Elite rally value assumes a 20 stamina rally cost. Reward values use the same inferred network prices as the rest of the guide."),
+                       "This calculator helps you determine the threshold at which Stamina is worth buying directly with diamonds each day, depending on opportunities for spending Stamina (Doom Elite being the most common)."),
                    fluidRow(
                      column(4,
                             div(class = "control-card",
@@ -1463,6 +1463,8 @@ ui <- fluidPage(
                             ))
                    ),
                    tableOutput("stam_table"),
+                   h3("Doom Elite Daily Stamina Purchases"),
+                   tableOutput("stam_purchase_table"),
                    uiOutput("arms_race_bonus_heading"),
                    tableOutput("arms_race_bonus_table")
                  )),
@@ -1912,6 +1914,26 @@ server <- function(input, output, session) {
         `Expected DIA` = bold_cell(fmt_num(stam_known_total() / 20, 2)),
         Note = "20 stamina per Doom Elite rally."
       ))
+  }, sanitize.text.function = identity)
+
+  output$stam_purchase_table <- renderTable({
+    value_100 <- stam_known_total() / 20 * 100
+    purchase_cell <- function(x, worth_it) {
+      cls <- ifelse(worth_it, "stam-buy-good", "stam-buy-bad")
+      paste0("<span class='stam-buy-cell ", cls, "'>", x, "</span>")
+    }
+
+    tibble(cost = c(300, 500, 1000)) %>%
+      mutate(
+        worth_it = value_100 >= cost,
+        net = value_100 - cost
+      ) %>%
+      transmute(
+        Purchase = purchase_cell(paste0("Purchase 100 Stamina for ", fmt_num(cost, 0), " Diamonds"), worth_it),
+        `Modeled payoff` = purchase_cell(paste0(fmt_sig(value_100, 3), " Diamonds"), worth_it),
+        `Net value` = purchase_cell(paste0(ifelse(net >= 0, "+", ""), fmt_sig(net, 3), " Diamonds"), worth_it),
+        Decision = purchase_cell(ifelse(worth_it, "Worth buying", "Not worth buying"), worth_it)
+      )
   }, sanitize.text.function = identity)
 
   output$arms_race_bonus_heading <- renderUI({

@@ -45,6 +45,9 @@ h1 { font-size: 30px; font-weight: 750; margin: 0 0 6px; letter-spacing: 0; }
 .train-warning-ok { background: #d8f3dc; color: #12632f; border: 1px solid #b7e4c7; }
 .train-warning-bad { background: #fff3bf; color: #7a5200; border: 1px solid #ffe08a; }
 .train-warning-over { background: #ffd6d6; color: #8a1f1f; border: 1px solid #f3a5a5; }
+.stam-buy-cell { display: block; margin: -4px -6px; padding: 7px 8px; border-radius: 6px; font-weight: 700; }
+.stam-buy-good { background: #d8f3dc; color: #12632f; }
+.stam-buy-bad { background: #ffd6d6; color: #8a1f1f; }
 .train-save-row { display: flex; gap: 10px; align-items: center; margin: 0 0 12px; }
 .saved-train-panel { background: white; border: 1px solid #dfe4ea; border-radius: 8px; padding: 12px; margin-bottom: 14px; height: 100%; }
 .saved-train-panel h4 { margin: 0 0 10px; font-size: 16px; font-weight: 750; color: #243242; }
