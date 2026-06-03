@@ -1078,7 +1078,7 @@ item_icon <- function(item, item_key = "") {
     item_l == "profession exp" ~ icon_or_badge("profession-exp.svg", "EXP", "hero", "Profession EXP"),
     item_l == "recruitment orders" ~ icon_or_badge("recruitment-orders.svg", "ORD", "ticket", "Recruitment Orders"),
     item_l == "s1 skill point" ~ icon_or_badge("season-s1-skill-point.svg", "S1", "badge", "S1 Skill Point"),
-    item_l == "mutant crystals" ~ icon_badge("MUT", "material", "Mutant Crystals"),
+    item_l == "mutant crystals" ~ icon_or_badge("mutant-crystals.svg", "MUT", "material", "Mutant Crystals"),
     item_l == "dominance sanctuary permanent" ~ icon_or_badge("season-dominance-sanctuary.svg", "SAN", "decor", "Dominance Sanctuary (Permanent)"),
     item_l == "god of judgment" ~ icon_or_badge("season-god-of-judgment.svg", "GOD", "decor", "God of Judgment"),
     item_l == "profession change certificate" ~ icon_or_badge("season-profession-change.svg", "JOB", "badge", "Profession Change Certificate"),
