@@ -1101,7 +1101,7 @@ item_icon <- function(item, item_key = "") {
     str_detect(item_l, "\\bssr\\b.*hero.*shard|violet shard") ~ icon_or_badge("shard-ssr.svg", "SSR", "shard", "SSR hero shard"),
     str_detect(item_l, "\\bsr\\b.*hero.*shard") ~ icon_or_badge("shard-sr.svg", "SR", "shard", "SR hero shard"),
     str_detect(item_l, "hero universal shard|hero shard") ~ icon_or_badge("shard-ur.svg", "SHD", "shard", "Hero shard"),
-    item_l == "5 minute speed up chest" | item_l == "5 min speed up chest" | item_l == "5m speed up chest" ~ icon_or_badge("speed-chest-5m.svg", "5m", "speed", "5-minute speed-up chest"),
+    item_l == "5 minute speed up chest" | item_l == "5 min speed up chest" | item_l == "5m speed up chest" | item_l == "5m speed-up chest" ~ icon_or_badge("speed-chest-5m.svg", "5m", "speed", "5-minute speed-up chest"),
     str_detect(item_l, "5m research speed up") ~ icon_or_badge("speed-research-5m.svg", "5m", "speed", "5m research speed-up"),
     str_detect(item_l, "5m construction speed up") ~ icon_or_badge("speed-construction-5m.svg", "5m", "speed", "5m construction speed-up"),
     str_detect(item_l, "research speed up") ~ icon_or_badge("speed-research.svg", "R&D", "speed", "Research speed-up"),
