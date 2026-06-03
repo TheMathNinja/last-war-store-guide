@@ -1451,7 +1451,7 @@ ui <- fluidPage(
                    fluidRow(
                      column(4,
                             div(class = "control-card",
-                                checkboxInput("stam_arms_race", "include Arms Race bonuses?", value = FALSE),
+                                checkboxInput("stam_arms_race", "Include Arms Race Bonuses?", value = FALSE),
                                 checkboxInput("stam_monica", "Include Monica's Treasure Hunter Lvl 26?", value = FALSE),
                                 uiOutput("stam_bonus_note")
                             )),
