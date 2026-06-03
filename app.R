@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-03 stamina purchase thresholds"
+app_build_label <- "Build: 2026-06-03 stamina labels"
 icon_cache_bust <- "20260603a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1458,8 +1458,8 @@ ui <- fluidPage(
                      column(8,
                             fluidRow(
                               column(4, div(class = "metric", div(class = "label", "Stamina cost"), div(class = "value", "20"))),
-                              column(4, div(class = "metric", div(class = "label", "Known DIA value"), div(class = "value", textOutput("stam_total_value", inline = TRUE)))),
-                              column(4, div(class = "metric", div(class = "label", "Known DIA / Stam"), div(class = "value", textOutput("stam_value_per_stam", inline = TRUE))))
+                              column(4, div(class = "metric", div(class = "label", "Total DIA value"), div(class = "value", textOutput("stam_total_value", inline = TRUE)))),
+                              column(4, div(class = "metric", div(class = "label", "DIA / Stam"), div(class = "value", textOutput("stam_value_per_stam", inline = TRUE))))
                             ))
                    ),
                    tableOutput("stam_table"),
@@ -1899,15 +1899,15 @@ server <- function(input, output, session) {
         Note = note
       ) %>%
       bind_rows(tibble(
-        Reward = "<strong>Known total per Doom Elite rally</strong>",
+        Reward = "<strong>Total per Doom Elite rally</strong>",
         Qty = "",
         Chance = "",
         `DIA if received` = "",
         `Expected DIA` = bold_cell(fmt_sig(stam_known_total(), 3)),
-        Note = "Includes raw Hero EXP conversion for the selected HQ level."
+        Note = "Uses selected HQ level where available; otherwise uses HQ 29."
       )) %>%
       bind_rows(tibble(
-        Reward = "<strong>Known total per 1 Stamina</strong>",
+        Reward = "<strong>Total per 1 Stamina</strong>",
         Qty = "",
         Chance = "",
         `DIA if received` = "",
