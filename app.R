@@ -1307,7 +1307,7 @@ train_items <- function(hq_level = 29) {
     "universal_decor_component_20", "Universal Decor Component (x20)", "Universal Decor Component", "20", "item", "universal decor component equivalent", 20, NA_character_, NA_real_,
     "dielectric_ceramic_50", "Dielectric Ceramic (x50)", "Dielectric Ceramic", "50", "item", "superalloy equivalent", 50 * 16, NA_character_, NA_real_,
     "alliance_contribution_500", "Alliance Contribution (x500)", "Alliance Contribution Purple", "500", "currency", NA_character_, 500, "ALL", NA_real_,
-    "alliance_contribution_1000", "Alliance Contribution (x1000)", "Alliance Contribution", "1.0k", "currency", NA_character_, 1000, "ALL", NA_real_,
+    "alliance_contribution_1000", "Alliance Contribution (x1.0k)", "Alliance Contribution Purple", "1.0k", "currency", NA_character_, 1000, "ALL", NA_real_,
     "battle_data_4", "10k Battle Data (x4)", "Battle Data (10k)", "4", "item", "battle data", 4, NA_character_, NA_real_,
     "drone_parts_2", "Drone Parts (x2)", "Drone Parts", "2", "item", "drone parts", 2, NA_character_, NA_real_,
     "drone_component_lv1_1", "Lv.1 Drone Component Chest (x1)", "Lv.1 Drone Component Chest", "1", "item", "drone component level 1 equivalent", 1, NA_character_, NA_real_,
@@ -1338,9 +1338,10 @@ train_items <- function(hq_level = 29) {
         TRUE ~ 3L
       ),
       tier_sort_qty = if_else(str_detect(str_to_lower(reward_qty), "k"), parse_num(reward_qty) * 1000, parse_num(reward_qty)),
-      original_order = row_number()
+      original_order = row_number(),
+      label_family = str_remove(label, "\\s*\\(x[^)]*\\)$")
     ) %>%
-    arrange(tier_rank, str_to_lower(label))
+    arrange(tier_rank, str_to_lower(label_family), desc(tier_sort_qty), str_to_lower(label))
 }
 
 item_choices <- function(prices_df) {
