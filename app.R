@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-03 train brown tier additions"
+app_build_label <- "Build: 2026-06-04 train table ordering"
 icon_cache_bust <- "20260603a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1162,6 +1162,11 @@ train_item_cell <- function(label, icon_item = label) {
   paste0("<span class='icon-cell'>", item_icon(icon_item), "<span>", htmltools::htmlEscape(label), "</span></span>")
 }
 
+train_summary_cell <- function(value, tier) {
+  cls <- paste("train-summary-cell", paste0("train-summary-", tier))
+  paste0("<span class='", cls, "'>", value, "</span>")
+}
+
 item_link_cell <- function(item, item_key = "", target_item = "") {
   mapply(
     function(item_one, key_one, target_one) {
@@ -1250,7 +1255,6 @@ train_items <- function(hq_level = 29) {
     "ur_decoration_1",
     "ur_resource_choice_3",
     "skill_medal_3000",
-    "universal_decor_component_20",
     "upgrade_ore_2500",
     "dielectric_ceramic_50",
     "drone_parts_6",
@@ -2267,35 +2271,34 @@ server <- function(input, output, session) {
 
   output$train_table <- renderTable({
     rows <- train_rows() %>%
-      filter(slot_count > 0) %>%
-      arrange(desc(dia_total), desc(dia_each))
+      filter(slot_count > 0)
     if (nrow(rows) == 0) {
       return(tibble(Message = "Enter item counts below to calculate this train car."))
     }
 
     rows %>%
       transmute(
-        Item = train_item_cell(label, icon_item),
-        Count = fmt_num(slot_count, 0),
-        `Diamond Equivalent` = fmt_dia_equiv(dia_each),
-        `Total Diamond Value` = bold_cell(fmt_dia_equiv(dia_total))
+        Item = train_summary_cell(train_item_cell(label, icon_item), tier),
+        Count = train_summary_cell(fmt_num(slot_count, 0), tier),
+        `Diamond Value Each` = train_summary_cell(fmt_dia_equiv(dia_each), tier),
+        `Total Diamond Value` = train_summary_cell(bold_cell(fmt_dia_equiv(dia_total)), tier)
       ) %>%
       bind_rows(tibble(
         Item = "<strong>Total Train Car Value</strong>",
         Count = "",
-        `Diamond Equivalent` = "",
+        `Diamond Value Each` = "",
         `Total Diamond Value` = bold_cell(fmt_dia_equiv(train_total_value()))
       )) %>%
       bind_rows(tibble(
         Item = "<strong>Selection Probability</strong>",
         Count = "",
-        `Diamond Equivalent` = "",
+        `Diamond Value Each` = "",
         `Total Diamond Value` = bold_cell(paste0(fmt_num(100 * train_selection_probability(), 1), "%"))
       )) %>%
       bind_rows(tibble(
         Item = "<strong>Queue Position EV</strong>",
         Count = "",
-        `Diamond Equivalent` = "",
+        `Diamond Value Each` = "",
         `Total Diamond Value` = bold_cell(paste0(fmt_dia_equiv(train_selection_probability() * train_total_value()), " DIA"))
       ))
   }, sanitize.text.function = identity)

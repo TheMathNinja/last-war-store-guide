@@ -33,6 +33,10 @@ h1 { font-size: 30px; font-weight: 750; margin: 0 0 6px; letter-spacing: 0; }
 .train-item-low { background: linear-gradient(135deg, #f6dfc5 0%, #d88a3d 48%, #8a4f24 100%); border-color: #a9612d; box-shadow: inset 0 1px 0 rgba(255,255,255,.45); }
 .train-item-low .control-label,
 .train-item-low .train-item-value { color: #2d1b12; }
+.train-summary-cell { display: block; margin: -4px -6px; padding: 7px 8px; min-height: 34px; }
+.train-summary-top { background: linear-gradient(135deg, #fff7d6 0%, #ffe19a 42%, #fff3bf 100%); color: #223142; }
+.train-summary-standard { background: #ffffff; color: #223142; }
+.train-summary-low { background: linear-gradient(135deg, #f6dfc5 0%, #d88a3d 48%, #8a4f24 100%); color: #2d1b12; }
 .train-qty-control { background: transparent; border: 0; border-radius: 6px; padding: 0; margin: 0; }
 .train-qty-control .form-control { background: #ffffff; border-color: #cfd8e3; font-weight: 700; }
 .train-slot-empty .form-control { background: #ffffff; border-color: #cfd8e3; color: #223142; }
