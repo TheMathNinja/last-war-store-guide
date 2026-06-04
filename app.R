@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-03 stamina labels"
+app_build_label <- "Build: 2026-06-03 train brown tier additions"
 icon_cache_bust <- "20260603a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -99,12 +99,12 @@ standardize_display_item <- function(item) {
     return(paste0("Resource Choice Chest (", toupper(tier), ")"))
   }
 
-  component_level <- str_match(key, "\\blv\\s*([0-9]+)\\s*(?:drone\\s*)?component")[, 2]
+  component_level <- str_match(key, "\\blv\\.?\\s*([0-9]+)\\s*(?:drone\\s*)?component")[, 2]
   if (!is.na(component_level)) {
     if (str_detect(key, "choice chest")) {
-      return(paste0("Lv ", component_level, " Drone Component Choice Chest"))
+      return(paste0("Lv.", component_level, " Drone Component Choice Chest"))
     }
-    return(paste0("Lv ", component_level, " Drone Component Chest"))
+    return(paste0("Lv.", component_level, " Drone Component Chest"))
   }
 
   if (key == "drone part" || key == "drone parts") {
@@ -1039,16 +1039,16 @@ item_icon <- function(item, item_key = "") {
 
   item_l <- clean_item_key(item)
   key_l <- clean_item_key(item_key)
-  component_level <- str_match(item_l, "\\blv\\s*([0-9]+)\\s*(?:drone\\s*)?component")[, 2]
+  component_level <- str_match(item_l, "\\blv\\.?\\s*([0-9]+)\\s*(?:drone\\s*)?component")[, 2]
   case_when(
     item_l == "diamonds" ~ icon_or_badge("diamonds.svg", "DIA", "diamond", "Diamonds"),
-    item_l == "alliance contribution purple" ~ icon_badge("ALL", "badge", "Alliance Contributions"),
+    item_l == "alliance contribution purple" ~ icon_or_badge("currency-alliance-contribution-purple.svg", "ALL", "badge", "Alliance Contributions"),
     str_detect(item_l, "alliance contribution") ~ icon_or_badge("currency-alliance-contribution.svg", "ALL", "alliance", "Alliance Contributions"),
     str_detect(item_l, "(drone )?component choice chest") & component_level %in% c("3", "5") ~
-      icon_or_badge(paste0("drone-component-choice-chest-lv", component_level, ".svg"), paste0("Lv", component_level), "drone", paste0("Lv ", component_level, " component choice chest")),
+      icon_or_badge(paste0("drone-component-choice-chest-lv", component_level, ".svg"), paste0("Lv", component_level), "drone", paste0("Lv.", component_level, " component choice chest")),
     str_detect(item_l, "(drone )?component choice chest") ~ icon_badge(if_else(is.na(component_level), "Lv", paste0("Lv", component_level)), "drone", "Component choice chest"),
     str_detect(item_l, "(drone )?component chest") & component_level %in% c("1", "3", "5") ~
-      icon_or_badge(paste0("drone-component-chest-lv", component_level, ".svg"), paste0("Lv", component_level), "drone", paste0("Lv ", component_level, " component chest")),
+      icon_or_badge(paste0("drone-component-chest-lv", component_level, ".svg"), paste0("Lv", component_level), "drone", paste0("Lv.", component_level, " component chest")),
     str_detect(item_l, "(drone )?component chest") ~ icon_badge(if_else(is.na(component_level), "Lv", paste0("Lv", component_level)), "drone", "Component chest"),
     item_l == "stamina" ~ icon_or_badge("stamina.svg", "STA", "energy", "Stamina"),
     item_l == "advanced teleporter" ~ icon_or_badge("advanced-teleporter.svg", "ADV", "teleport", "Advanced teleporter"),
@@ -1261,11 +1261,15 @@ train_items <- function(hq_level = 29) {
     "alliance_contribution_1000",
     "battle_data_4",
     "drone_parts_2",
+    "drone_component_lv1_1",
     "speed_5m_10",
+    "skill_medal_1800",
+    "sr_hero_exp_16",
     "upgrade_ore_500",
     "sr_resource_chest_4",
     "sr_resource_chest_6",
     "ssr_coin_chest_1",
+    "ssr_hero_shard_1",
     "resource_chest_25",
     "resource_chest_40",
     "ssr_coin_chest_2",
@@ -1296,7 +1300,7 @@ train_items <- function(hq_level = 29) {
     "drone_parts_6", "Drone Parts (x6)", "Drone Parts", "6", "item", "drone parts", 6, NA_character_, NA_real_,
     "upgrade_ore_2000", "Upgrade Ore (x2.0k)", "Upgrade Ore", "2.0k", "item", "upgrade ore", 2000, NA_character_, NA_real_,
     "upgrade_ore_2500", "Upgrade Ore (x2.5k)", "Upgrade Ore", "2.5k", "item", "upgrade ore", 2500, NA_character_, NA_real_,
-    "drone_component_lv3_1", "Lv 3 Drone Component Chest (x1)", "Lv 3 Drone Component Chest", "1", "item", "drone component level 1 equivalent", 9, NA_character_, NA_real_,
+    "drone_component_lv3_1", "Lv.3 Drone Component Chest (x1)", "Lv.3 Drone Component Chest", "1", "item", "drone component level 1 equivalent", 9, NA_character_, NA_real_,
     "ur_hero_shard_2", "UR Universal Hero Shard (x2)", "UR Hero Universal Shard", "2", "item", "ur hero shard equivalent", 2, NA_character_, NA_real_,
     "skill_medal_2400", "Skill Medal (x2.4k)", "Skill Medal", "2.4k", "item", "skill medal", 2400, NA_character_, NA_real_,
     "skill_medal_3000", "Skill Medal (x3.0k)", "Skill Medal", "3.0k", "item", "skill medal", 3000, NA_character_, NA_real_,
@@ -1306,11 +1310,15 @@ train_items <- function(hq_level = 29) {
     "alliance_contribution_1000", "Alliance Contribution (x1000)", "Alliance Contribution", "1.0k", "currency", NA_character_, 1000, "ALL", NA_real_,
     "battle_data_4", "10k Battle Data (x4)", "Battle Data (10k)", "4", "item", "battle data", 4, NA_character_, NA_real_,
     "drone_parts_2", "Drone Parts (x2)", "Drone Parts", "2", "item", "drone parts", 2, NA_character_, NA_real_,
+    "drone_component_lv1_1", "Lv.1 Drone Component Chest (x1)", "Lv.1 Drone Component Chest", "1", "item", "drone component level 1 equivalent", 1, NA_character_, NA_real_,
     "speed_5m_10", "5-min Speed Up Chest (x10)", "5m Speed Up Chest", "10", "item", "construction speed up hour", 10 * 5 / 60, NA_character_, NA_real_,
+    "skill_medal_1800", "Skill Medal (x1.8k)", "Skill Medal", "1.8k", "item", "skill medal", 1800, NA_character_, NA_real_,
+    "sr_hero_exp_16", "SR Hero EXP Chest (x16)", "Hero EXP Chest (SR)", "16", "item", "hero exp chest sr equivalent", 16, NA_character_, NA_real_,
     "upgrade_ore_500", "Upgrade Ore (x500)", "Upgrade Ore", "500", "item", "upgrade ore", 500, NA_character_, NA_real_,
     "sr_resource_chest_4", "SR Food/Iron/Coin Chest (x4)", "SR Food/Iron/Coin Chest", "4", "item", "coins resource", 4 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
     "sr_resource_chest_6", "SR Food/Iron/Coin Chest (x6)", "SR Food/Iron/Coin Chest", "6", "item", "coins resource", 6 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
     "ssr_coin_chest_1", "SSR Coin Chest (x1)", "SSR Coin Chest", "1", "item", "coins resource", resource_tier_multiplier("ssr"), NA_character_, NA_real_,
+    "ssr_hero_shard_1", "SSR Universal Hero Shard (x1)", "SSR Hero Universal Shard", "1", "item", "ssr hero shard equivalent", 1, NA_character_, NA_real_,
     "resource_chest_25", "Resource Chest (x25)", "Resource Chest (SR)", "25", "item", "food resource", 25 * 10000 / sr_food, NA_character_, NA_real_,
     "resource_chest_40", "Resource Chest (x40)", "Resource Chest (SR)", "40", "item", "food resource", 40 * 10000 / sr_food, NA_character_, NA_real_,
     "ssr_coin_chest_2", "SSR Coin Chest (x2)", "SSR Coin Chest", "2", "item", "coins resource", 2 * resource_tier_multiplier("ssr"), NA_character_, NA_real_,
@@ -1332,7 +1340,7 @@ train_items <- function(hq_level = 29) {
       tier_sort_qty = if_else(str_detect(str_to_lower(reward_qty), "k"), parse_num(reward_qty) * 1000, parse_num(reward_qty)),
       original_order = row_number()
     ) %>%
-    arrange(tier_rank, if_else(tier == "low", -tier_sort_qty, NA_real_), label)
+    arrange(tier_rank, str_to_lower(label))
 }
 
 item_choices <- function(prices_df) {
