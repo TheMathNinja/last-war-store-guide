@@ -15,12 +15,10 @@
     </filter>
   </defs>
   <rect x="1" y="1" width="62" height="62" rx="3" fill="url(#bg)" stroke="#5b3a84" stroke-width="1.5"/>
-  <text x="31" y="14" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="10" font-weight="900" fill="#fff" stroke="#263142" stroke-width="2.2" paint-order="stroke">500</text>
   <g filter="url(#shadow)">
     <circle cx="31" cy="36" r="18" fill="url(#coin)" stroke="#8d4a12" stroke-width="2.4"/>
     <circle cx="31" cy="36" r="12.5" fill="none" stroke="#ffe572" stroke-width="2"/>
     <path d="M31 23 35 32l9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1Z" fill="#b76517" stroke="#fff07a" stroke-width="1.5" stroke-linejoin="round"/>
     <path d="M24 28c5-4 11-5 17-3" stroke="#fff7a6" stroke-width="3" stroke-linecap="round" opacity=".75"/>
   </g>
-  <text x="58" y="58" text-anchor="end" font-family="Arial Black, Arial, sans-serif" font-size="16" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2.8" paint-order="stroke">1</text>
 </svg>

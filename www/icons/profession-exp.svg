@@ -15,7 +15,6 @@
     </filter>
   </defs>
   <rect x="1" y="1" width="62" height="62" rx="3" fill="url(#bg)" stroke="#5b3a84" stroke-width="1.5"/>
-  <text x="32" y="14" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="10" font-weight="900" fill="#fff" stroke="#263142" stroke-width="2.2" paint-order="stroke">10.0K</text>
   <g filter="url(#shadow)" transform="rotate(7 32 34)">
     <path d="M17 18h32l-6 34H11Z" fill="#f6c04b" stroke="#5d3214" stroke-width="2"/>
     <path d="M20 20h25l-5 29H15Z" fill="url(#book)" stroke="#f8d86a" stroke-width="1.3"/>
@@ -23,5 +22,4 @@
     <path d="M43 21 38 50" stroke="#17193f" stroke-width="2.2" opacity=".7"/>
     <text x="30" y="43" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="12" font-weight="900" fill="#ffe66d">EXP</text>
   </g>
-  <text x="58" y="58" text-anchor="end" font-family="Arial Black, Arial, sans-serif" font-size="16" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2.8" paint-order="stroke">1</text>
 </svg>

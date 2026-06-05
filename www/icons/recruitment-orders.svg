@@ -23,5 +23,4 @@
     <circle cx="34" cy="29" r="4" fill="#232a3a"/>
     <path d="M24 23 16 39" stroke="#ffdc61" stroke-width="3" stroke-linecap="round"/>
   </g>
-  <text x="58" y="58" text-anchor="end" font-family="Arial Black, Arial, sans-serif" font-size="16" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2.8" paint-order="stroke">1.0K</text>
 </svg>

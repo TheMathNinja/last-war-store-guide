@@ -2,5 +2,4 @@
   <rect width="96" height="96" fill="#f59e0b"/>
   <path d="M48 8l32 18v44L48 88 16 70V26z" fill="#facc15" stroke="#a16207" stroke-width="5"/>
   <path d="M48 18l22 13v34L48 78 26 65V31z" fill="#fbbf24" stroke="#fff7ad" stroke-width="3"/>
-  <text x="48" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#92400e">50</text>
 </svg>

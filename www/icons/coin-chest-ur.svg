@@ -20,5 +20,4 @@
     <path d="M34 27c5 2 8 7 7 12" stroke="#fff19a" stroke-width="2.4" stroke-linecap="round" opacity=".75"/>
     <path d="M17 18h32v6H17Z" fill="#fff0a3" opacity=".9"/>
   </g>
-  <text x="58" y="58" text-anchor="end" font-family="Arial Black, Arial, sans-serif" font-size="16" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2.8" paint-order="stroke">5</text>
 </svg>

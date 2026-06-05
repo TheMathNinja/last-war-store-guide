@@ -21,5 +21,4 @@
     <text x="33" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="8.5" font-style="italic" font-weight="900" fill="#e65f1b">Skill</text>
   </g>
   <text x="41" y="49" font-family="Arial Black, Arial, sans-serif" font-size="18" font-weight="900" fill="#1fd253" stroke="#0c7c28" stroke-width=".6">S1</text>
-  <text x="58" y="59" text-anchor="end" font-family="Arial Black, Arial, sans-serif" font-size="16" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2.6" paint-order="stroke">1</text>
 </svg>

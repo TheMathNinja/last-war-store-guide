@@ -6,7 +6,7 @@ library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
 app_build_label <- "Build: 2026-06-04 train UR coin chest"
-icon_cache_bust <- "20260603a"
+icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {

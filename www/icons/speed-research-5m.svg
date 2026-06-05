@@ -9,5 +9,4 @@
     <circle cx="47" cy="43" r="3.5" fill="#38bdf8"/>
     <path d="M42 34c3 3 8 3 11 0" fill="none" stroke="#38bdf8" stroke-width="2.6" stroke-linecap="round"/>
   </g>
-  <text x="52" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2" paint-order="stroke">1</text>
 </svg>

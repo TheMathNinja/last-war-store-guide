@@ -30,5 +30,4 @@
     <path d="M27 35c5 2 11 1 17-2" stroke="#4a2a12" stroke-width="2" stroke-linecap="round"/>
     <path d="M23 48c9-3 17-9 24-19" stroke="#fff0a3" stroke-width="2" stroke-linecap="round" opacity=".8"/>
   </g>
-  <text x="58" y="58" text-anchor="end" font-family="Arial Black, Arial, sans-serif" font-size="16" font-weight="900" fill="#fff" stroke="#1f2937" stroke-width="2.8" paint-order="stroke">10</text>
 </svg>

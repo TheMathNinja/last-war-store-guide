@@ -16,8 +16,6 @@
   </defs>
   <rect x="5" y="5" width="54" height="54" rx="2.5" fill="url(#bg)" stroke="#2f3440" stroke-width="1.5"/>
   <rect x="5" y="5" width="54" height="15" rx="2.5" fill="#c9b5ee" opacity=".9"/>
-  <text x="32" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="900" fill="#f7fbff" stroke="#1f2937" stroke-width="1.8" paint-order="stroke">50</text>
   <path filter="url(#shadow)" d="M34 14 19 37h13l-5 16 20-27H34l5-12Z" fill="url(#bolt)" stroke="#8c4e00" stroke-width="1.6" stroke-linejoin="round"/>
   <path d="M31 18 25 32h8" fill="none" stroke="#fff6a7" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
-  <text x="52" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#ffffff" stroke="#1f2937" stroke-width="2" paint-order="stroke">1</text>
 </svg>
