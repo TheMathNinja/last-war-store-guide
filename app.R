@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-04 train table ordering"
+app_build_label <- "Build: 2026-06-04 train UR coin chest"
 icon_cache_bust <- "20260603a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1114,6 +1114,7 @@ item_icon <- function(item, item_key = "") {
     str_detect(item_l, "resource choice chest") ~ icon_or_badge("resource-choice-chest-ssr.svg", "RSC", "chest", "Resource choice chest"),
     str_detect(item_l, "food chest") & str_detect(item_l, "\\bssr\\b") ~ icon_or_badge("food-chest-ssr.svg", "FD", "food", "SSR Food Chest"),
     str_detect(item_l, "iron chest") & str_detect(item_l, "\\bssr\\b") ~ icon_or_badge("iron-chest-ssr.svg", "FE", "iron", "SSR Iron Chest"),
+    str_detect(item_l, "coin chest") & str_detect(item_l, "\\bur\\b") ~ icon_or_badge("coin-chest-ur.svg", "$", "coin", "UR Coin Chest"),
     str_detect(item_l, "coin chest") & str_detect(item_l, "\\bssr\\b") ~ icon_or_badge("coin-chest-ssr.svg", "$", "coin", "SSR Coin Chest"),
     item_l == "food" | str_detect(key_l, "food resource") ~ icon_or_badge("food-50k.svg", "FD", "food", "Food resource"),
     item_l == "iron" | str_detect(key_l, "iron resource") ~ icon_or_badge("iron-50k.svg", "FE", "iron", "Iron resource"),
@@ -1254,6 +1255,7 @@ train_items <- function(hq_level = 29) {
     "gear_ssr_1",
     "ur_decoration_1",
     "ur_resource_choice_3",
+    "ur_coin_chest_5",
     "skill_medal_3000",
     "upgrade_ore_2500",
     "dielectric_ceramic_50",
@@ -1295,6 +1297,7 @@ train_items <- function(hq_level = 29) {
     "ur_decoration_1", "UR Decoration Chest (x1)", "Decoration Chest (UR)", "1", "item", "universal decor component equivalent", 130, NA_character_, NA_real_,
     "alliance_contribution_2500", "Alliance Contribution (x2.5k)", "Alliance Contribution", "2.5k", "currency", NA_character_, 2500, "ALL", NA_real_,
     "ur_resource_choice_3", "UR Resource Choice Chest (x3)", "Resource Choice Chest (UR)", "3", "item", "food resource", 3 * resource_tier_multiplier("ur"), NA_character_, NA_real_,
+    "ur_coin_chest_5", "UR Coin Chest (x5)", "UR Coin Chest", "5", "item", "coins resource", 5 * resource_tier_multiplier("ur"), NA_character_, NA_real_,
     "ur_hero_shard_1", "UR Universal Hero Shard (x1)", "UR Hero Universal Shard", "1", "item", "ur hero shard equivalent", 1, NA_character_, NA_real_,
     "sr_hero_exp_32", "SR Hero EXP Chest (x32)", "Hero EXP Chest (SR)", "32", "item", "hero exp chest sr equivalent", 32, NA_character_, NA_real_,
     "sr_resource_chest_32", "SR Food/Iron/Coin Chest (x32)", "SR Food/Iron/Coin Chest", "32", "item", "coins resource", 32 * resource_tier_multiplier("sr"), NA_character_, NA_real_,
