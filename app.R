@@ -1128,7 +1128,7 @@ item_icon <- function(item, item_key = "") {
     str_detect(item_l, "iron chest") ~ icon_badge("FE", "iron", "Iron"),
     str_detect(item_l, "coin chest") ~ icon_badge("$", "coin", "Coins"),
     item_l == "drone parts" ~ icon_or_badge("drone-parts.webp", "GER", "drone", "Drone parts"),
-    str_detect(item_l, "drone combat boost") ~ icon_or_badge("battle-data.webp", "DAT", "drone", "Drone data"),
+    str_detect(item_l, "drone combat boost") ~ icon_or_badge("drone-combat-boost.svg", "EXP", "drone", "Drone Combat Boost EXP"),
     str_detect(item_l, "^battle data$|battle data 10k|battle data 100k") ~ icon_or_badge("battle-data.webp", "DAT", "drone", "Drone data"),
     str_detect(item_l, "gear blueprint") & str_detect(item_l, "\\bmr\\b") ~ icon_or_badge("gear-blueprint-mr.svg", "MR", "gear", "MR gear blueprint"),
     str_detect(item_l, "gear blueprint") & str_detect(item_l, "\\bur\\b") ~ icon_or_badge("gear-blueprint-ur.svg", "UR", "gear", "UR gear blueprint"),
