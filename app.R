@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-06 train brown tier update"
+app_build_label <- "Build: 2026-06-06 train tiered rounding"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -837,12 +837,17 @@ fmt_sig <- function(x, digits = 2) {
   str_replace(out, "\\.$", "")
 }
 
+round_train_dia <- function(x) {
+  nearest <- ifelse(abs(x) < 500, 50, 100)
+  ifelse(is.na(x), NA_real_, floor(x / nearest + 0.5) * nearest)
+}
+
 fmt_dia_equiv <- function(x) {
-  fmt_num(round(x / 100) * 100, 0)
+  fmt_num(round_train_dia(x), 0)
 }
 
 fmt_dia_compact <- function(x) {
-  x <- round(x / 100) * 100
+  x <- round_train_dia(x)
   ifelse(abs(x) >= 1000, paste0(fmt_num(x / 1000, 1), "k"), fmt_num(x, 0))
 }
 
