@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-06 train tiered rounding"
+app_build_label <- "Build: 2026-06-06 visible store counts"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1612,6 +1612,7 @@ server <- function(input, output, session) {
   output$store_count <- renderText({
     n <- store_model()$valued %>%
       filter(store == input$store, !is.na(effective_dia_unit)) %>%
+      collapse_visible_store_rows() %>%
       nrow()
     format(n, big.mark = ",")
   })
