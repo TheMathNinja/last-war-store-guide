@@ -5,14 +5,14 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-07 season 2 alliance additions"
+app_build_label <- "Build: 2026-06-07 season 1 alliance additions"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {
   file.path(Sys.getenv("USERPROFILE"), "Desktop", "Last War Price Guide.xlsx")
 }
-season_choices <- c("Season 1", "Season 2", "Preseason")
+season_choices <- c("Season 1", "Preseason")
 
 parse_num <- function(x) {
   x <- as.character(x)
@@ -500,7 +500,30 @@ filter_prices_for_season <- function(prices, season = "Season 1") {
 
 season_extra_listings <- function(season = "Season 1") {
   season <- ifelse(is.null(season) || is.na(season) || season == "", "Season 1", season)
-  if (season != "Season 2") {
+  rows <- tibble(
+    item = character(),
+    qty = numeric(),
+    price = numeric(),
+    curr = character(),
+    limit = numeric(),
+    store = character()
+  )
+
+  if (season == "Season 1") {
+    rows <- bind_rows(rows, tibble::tribble(
+      ~item, ~qty, ~price, ~curr, ~limit, ~store,
+      "Mason Shard", 1, 1000, "ALL", 30, "Alliance Storefront"
+    ))
+  }
+
+  if (season %in% c("Season 1", "Preseason")) {
+    rows <- bind_rows(rows, tibble::tribble(
+      ~item, ~qty, ~price, ~curr, ~limit, ~store,
+      "Stamina", 50, 2000, "ALL", 5, "Alliance Storefront"
+    ))
+  }
+
+  if (!nrow(rows)) {
     return(tibble(
       item = character(),
       qty = numeric(),
@@ -510,12 +533,7 @@ season_extra_listings <- function(season = "Season 1") {
       store = character()
     ))
   }
-
-  tibble::tribble(
-    ~item, ~qty, ~price, ~curr, ~limit, ~store,
-    "Mason Shard", 1, 1000, "ALL", 30, "Alliance Storefront",
-    "Stamina", 50, 2000, "ALL", 5, "Alliance Storefront"
-  )
+  rows
 }
 
 load_prices <- function(path = source_workbook, hq_level = 29, season = "Season 1") {
