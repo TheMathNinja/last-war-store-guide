@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-06 visible store counts"
+app_build_label <- "Build: 2026-06-06 stamina icon notes"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1090,7 +1090,7 @@ item_icon <- function(item, item_key = "") {
     item_l == "profession skill reset book" ~ icon_or_badge("season-profession-reset.svg", "SKL", "badge", "Profession Skill Reset Book"),
     item_l == "sandstorm master permanent" ~ icon_or_badge("season-sandstorm-master.svg", "SAN", "decor", "Sandstorm Master (Permanent)"),
     item_l == "ur hero badge" ~ icon_or_badge("season-ur-hero-badge.svg", "UR", "badge", "UR Hero Badge"),
-    item_l == "s1 gift chest" ~ icon_badge("S1", "chest", "S1 Gift Chest"),
+    item_l == "s1 gift chest" ~ icon_or_badge("s1-gift-chest.svg", "S1", "chest", "S1 Gift Chest"),
     item_l == "ssr gear chest" ~ icon_or_badge("gear-chest-ssr.svg", "SSR", "gear", "SSR Gear Chest"),
     item_l == "gear chest sr" ~ icon_or_badge("gear-chest-sr.svg", "SR", "gear", "Gear Chest (SR)"),
     item_l == "gear chest r" ~ icon_or_badge("gear-chest-r.svg", "R", "gear", "Gear Chest (R)"),
@@ -1900,7 +1900,12 @@ server <- function(input, output, session) {
   })
 
   output$stam_bonus_note <- renderUI({
-    notes <- c("Showing no-bonus Doom Elite rally rewards.")
+    has_bonus <- isTRUE(input$stam_arms_race) || isTRUE(input$stam_monica)
+    notes <- c(if_else(
+      has_bonus,
+      "Showing Doom Elite rally rewards with selected bonus assumptions.",
+      "Showing no-bonus Doom Elite rally rewards."
+    ))
     if (isTRUE(input$stam_arms_race)) {
       notes <- c(notes, "Arms Race bonus tiers are shown below as separate cumulative milestone values.")
     }
