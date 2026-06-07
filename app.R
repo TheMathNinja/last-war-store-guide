@@ -5,14 +5,14 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-06 stamina icon notes"
+app_build_label <- "Build: 2026-06-07 season 2 alliance additions"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {
   file.path(Sys.getenv("USERPROFILE"), "Desktop", "Last War Price Guide.xlsx")
 }
-season_choices <- c("Season 1", "Preseason")
+season_choices <- c("Season 1", "Season 2", "Preseason")
 
 parse_num <- function(x) {
   x <- as.character(x)
@@ -498,6 +498,26 @@ filter_prices_for_season <- function(prices, season = "Season 1") {
   prices
 }
 
+season_extra_listings <- function(season = "Season 1") {
+  season <- ifelse(is.null(season) || is.na(season) || season == "", "Season 1", season)
+  if (season != "Season 2") {
+    return(tibble(
+      item = character(),
+      qty = numeric(),
+      price = numeric(),
+      curr = character(),
+      limit = numeric(),
+      store = character()
+    ))
+  }
+
+  tibble::tribble(
+    ~item, ~qty, ~price, ~curr, ~limit, ~store,
+    "Mason Shard", 1, 1000, "ALL", 30, "Alliance Storefront",
+    "Stamina", 50, 2000, "ALL", 5, "Alliance Storefront"
+  )
+}
+
 load_prices <- function(path = source_workbook, hq_level = 29, season = "Season 1") {
   raw <- read_excel(path, sheet = 1, col_names = FALSE, .name_repair = "minimal")
   starts <- which(!is.na(as.character(raw[1, ])) & as.character(raw[2, ]) == "Item")
@@ -536,7 +556,7 @@ load_prices <- function(path = source_workbook, hq_level = 29, season = "Season 
       filter(!is.na(item), item != "")
   })
 
-  parsed <- bind_rows(rows) %>%
+  parsed <- bind_rows(rows, list(season_extra_listings(season))) %>%
     mutate(
       row_id = row_number()
     )
