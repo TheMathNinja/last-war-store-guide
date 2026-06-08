@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-07 season 1 alliance additions"
+app_build_label <- "Build: 2026-06-07 season 1 campaign weapon shard"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -512,7 +512,8 @@ season_extra_listings <- function(season = "Season 1") {
   if (season == "Season 1") {
     rows <- bind_rows(rows, tibble::tribble(
       ~item, ~qty, ~price, ~curr, ~limit, ~store,
-      "Mason Shard", 1, 1000, "ALL", 30, "Alliance Storefront"
+      "Mason Shard", 1, 1000, "ALL", 30, "Alliance Storefront",
+      "Universal Exclusive Weapon Shard", 1, 300, "CAM", 10, "Campaign Storefront"
     ))
   }
 
