@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-07 season 1 campaign weapon shard"
+app_build_label <- "Build: 2026-06-07 weekly source network weights"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -625,8 +625,20 @@ build_value_model <- function(prices, efficient_percentile = 0.80) {
     filter(store != "Wandering Merchant", include_in_network(.), !is.na(unit_native), unit_native > 0, !is.na(item_key), item_key != "", !is.na(curr), curr != "") %>%
     mutate(
       expansion_weight = 1 / ave(row_id, row_id, FUN = length),
+      store_cadence_multiplier = if_else(
+        store %in% c(
+          "VIP Storefront",
+          "Alliance Storefront",
+          "Campaign Storefront",
+          "ID Points Mall",
+          "Luxury Choice Chest",
+          "Deluxe Choice Chest"
+        ),
+        4,
+        1
+      ),
       finite_limit = if_else(is.na(limit), NA_real_, limit),
-      listed_base_volume = comparable_qty * finite_limit
+      listed_base_volume = comparable_qty * finite_limit * store_cadence_multiplier
     ) %>%
     group_by(network_item_key) %>%
     mutate(
@@ -1548,6 +1560,7 @@ ui <- fluidPage(
                      div("The model estimates item values and currency exchange rates together from all connected store listings, with DIA fixed at 1."),
                      div("Each listing contributes an observation: item value is expected to equal listed base-unit price times currency value."),
                      div("Observation weight reflects available base-unit volume, softened with a square root and capped so high-limit rows matter more without dominating."),
+                     div("VIP, Alliance, Campaign, ID Points Mall, Luxury Choice Chest, and Deluxe Choice Chest are treated as weekly sources, so their listed volume counts as 4x before the square-root softening is applied."),
                      div("Rows far above or below the fitted network remain visible as diagnostics; they are not removed before the first fit.")),
                  div(class = "filter-bar",
                      selectInput("anchor_currency", "Observation currency",
