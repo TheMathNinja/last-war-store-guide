@@ -513,7 +513,9 @@ season_extra_listings <- function(season = "Season 1") {
     rows <- bind_rows(rows, tibble::tribble(
       ~item, ~qty, ~price, ~curr, ~limit, ~store,
       "Mason Shard", 1, 1000, "ALL", 30, "Alliance Storefront",
-      "Universal Exclusive Weapon Shard", 1, 300, "CAM", 10, "Campaign Storefront"
+      "Universal Exclusive Weapon Shard", 1, 300, "CAM", 10, "Campaign Storefront",
+      "Universal Exclusive Weapon Shard", 1, 120, "COUR", 10, "Zombie Invasion Store",
+      "Skill Chip Chest (SR)", 1, 120, "COUR", 3, "Zombie Invasion Store"
     ))
   }
 
