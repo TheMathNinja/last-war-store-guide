@@ -504,6 +504,10 @@ apply_season_listing_overrides <- function(prices, season = "Season 1") {
     prices <- prices %>%
       filter(!(store == "Glittering Market" & clean_item_key(item) == "resource choice chest ssr")) %>%
       mutate(
+        price = case_when(
+          store == "Glittering Market" & clean_item_key(item) == "1h universal speed up" ~ 20,
+          TRUE ~ price
+        ),
         limit = case_when(
           store == "Glittering Market" & clean_item_key(item) == "gear blueprint ur" ~ 50,
           store == "Glittering Market" & clean_item_key(item) == "gear blueprint mr" ~ 5,
