@@ -505,13 +505,19 @@ apply_season_listing_overrides <- function(prices, season = "Season 1") {
       filter(!(store == "Glittering Market" & clean_item_key(item) == "resource choice chest ssr")) %>%
       filter(!(store == "Glittering Market" & clean_item_key(item) == "hero exp chest ssr")) %>%
       mutate(
+        qty = case_when(
+          store == "Glittering Market" & clean_item_key(item) == "skill medal" ~ 10000,
+          TRUE ~ qty
+        ),
         price = case_when(
           store == "Glittering Market" & clean_item_key(item) == "1h universal speed up" ~ 20,
+          store == "Glittering Market" & clean_item_key(item) == "skill medal" ~ 120,
           TRUE ~ price
         ),
         limit = case_when(
           store == "Glittering Market" & clean_item_key(item) == "gear blueprint ur" ~ 50,
           store == "Glittering Market" & clean_item_key(item) == "gear blueprint mr" ~ 5,
+          store == "Glittering Market" & clean_item_key(item) == "skill medal" ~ 100,
           TRUE ~ limit
         )
       )
