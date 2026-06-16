@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-07 weekly source network weights"
+app_build_label <- "Build: 2026-06-16 season 1 glittering market updates"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -433,7 +433,7 @@ normalize_one_listing <- function(row, hq_level = 29) {
     ))
   }
 
-  if (str_detect(key, "skill chip chest") && !is.na(tier)) {
+  if (str_detect(key, "skill chip.*chest") && !is.na(tier)) {
     skill_chip_ev <- case_when(
       tier == "r" ~ "EV: 65% R, 30% SR, 4.8% SSR, 0.2% UR + 1 material",
       tier == "sr" ~ "EV: 68% SR, 30% SSR, 2% UR + 5 material",
@@ -452,7 +452,7 @@ normalize_one_listing <- function(row, hq_level = 29) {
     ))
   }
 
-  if (str_detect(key, "skill chip chest") && is.na(tier)) {
+  if (str_detect(key, "skill chip.*chest") && is.na(tier)) {
     return(tibble(
       item_key = "skill chip chest r",
       item_canonical = "Skill Chip Chest (R)",
@@ -498,6 +498,22 @@ filter_prices_for_season <- function(prices, season = "Season 1") {
   prices
 }
 
+apply_season_listing_overrides <- function(prices, season = "Season 1") {
+  season <- ifelse(is.null(season) || is.na(season) || season == "", "Season 1", season)
+  if (season == "Season 1") {
+    prices <- prices %>%
+      filter(!(store == "Glittering Market" & clean_item_key(item) == "resource choice chest ssr")) %>%
+      mutate(
+        limit = case_when(
+          store == "Glittering Market" & clean_item_key(item) == "gear blueprint ur" ~ 50,
+          store == "Glittering Market" & clean_item_key(item) == "gear blueprint mr" ~ 5,
+          TRUE ~ limit
+        )
+      )
+  }
+  prices
+}
+
 season_extra_listings <- function(season = "Season 1") {
   season <- ifelse(is.null(season) || is.na(season) || season == "", "Season 1", season)
   rows <- tibble(
@@ -515,7 +531,11 @@ season_extra_listings <- function(season = "Season 1") {
       "Mason Shard", 1, 1000, "ALL", 30, "Alliance Storefront",
       "Universal Exclusive Weapon Shard", 1, 300, "CAM", 10, "Campaign Storefront",
       "Universal Exclusive Weapon Shard", 1, 120, "COUR", 10, "Zombie Invasion Store",
-      "Skill Chip Chest (SR)", 1, 120, "COUR", 3, "Zombie Invasion Store"
+      "Skill Chip Chest (SR)", 1, 120, "COUR", 3, "Zombie Invasion Store",
+      "Skill Chip Chest (SSR)", 1, 30, "GLIT", 10, "Glittering Market",
+      "Skill Chip Choice Chest (UR)", 1, 300, "GLIT", 3, "Glittering Market",
+      "Skill Chip Chest (UR)", 1, 250, "GLIT", 10, "Glittering Market",
+      "Resource Choice Chest (UR)", 1, 5, "GLIT", 500, "Glittering Market"
     ))
   }
 
@@ -550,7 +570,7 @@ load_prices <- function(path = source_workbook, hq_level = 29, season = "Season 
       mutate(
         store = str_replace(as.character(raw[[st]][1]), "Invation", "Invasion"),
         item = as.character(item),
-        item = if_else(str_detect(clean_item_key(item), "skill chip chest") & !str_detect(clean_item_key(item), "\\bsr\\b|\\bssr\\b|\\bur\\b"),
+        item = if_else(str_detect(clean_item_key(item), "skill chip.*chest") & !str_detect(clean_item_key(item), "\\bsr\\b|\\bssr\\b|\\bur\\b"),
                        "Skill Chip Chest (R)", item),
         item = case_when(
           str_detect(clean_item_key(item), "battle data 10k") ~ "Battle Data (10k)",
@@ -578,6 +598,7 @@ load_prices <- function(path = source_workbook, hq_level = 29, season = "Season 
   })
 
   parsed <- bind_rows(rows, list(season_extra_listings(season))) %>%
+    apply_season_listing_overrides(season) %>%
     mutate(
       row_id = row_number()
     )
@@ -1121,11 +1142,11 @@ item_icon <- function(item, item_key = "") {
     item_l == "valor badge" ~ icon_or_badge("valor-badge.webp", "VAL", "badge", "Valor badge"),
     item_l == "survivor s token" ~ icon_or_badge("survivor-token.svg", "TOK", "token", "Survivor's Token"),
     item_l == "diamonds" ~ icon_or_badge("diamonds.svg", "DIA", "diamond", "Diamonds"),
-    str_detect(item_l, "skill chip chest") & str_detect(item_l, "\\bur\\b") ~ icon_or_badge("skill-chip-chest-ur.svg", "UR", "chip", "Skill Chip Chest (UR)"),
-    str_detect(item_l, "skill chip chest") & str_detect(item_l, "\\bssr\\b") ~ icon_or_badge("skill-chip-chest-ssr.svg", "SSR", "chip", "Skill Chip Chest (SSR)"),
-    str_detect(item_l, "skill chip chest") & str_detect(item_l, "\\bsr\\b") ~ icon_or_badge("skill-chip-chest-sr.svg", "SR", "chip", "Skill Chip Chest (SR)"),
-    str_detect(item_l, "skill chip chest") & str_detect(item_l, "\\br\\b") ~ icon_or_badge("skill-chip-chest-r.svg", "R", "chip", "Skill Chip Chest (R)"),
-    str_detect(item_l, "skill chip chest") ~ icon_or_badge("skill-chip-chest-r.svg", "CHP", "chip", "Skill chip chest"),
+    str_detect(item_l, "skill chip.*chest") & str_detect(item_l, "\\bur\\b") ~ icon_or_badge("skill-chip-chest-ur.svg", "UR", "chip", "Skill Chip Chest (UR)"),
+    str_detect(item_l, "skill chip.*chest") & str_detect(item_l, "\\bssr\\b") ~ icon_or_badge("skill-chip-chest-ssr.svg", "SSR", "chip", "Skill Chip Chest (SSR)"),
+    str_detect(item_l, "skill chip.*chest") & str_detect(item_l, "\\bsr\\b") ~ icon_or_badge("skill-chip-chest-sr.svg", "SR", "chip", "Skill Chip Chest (SR)"),
+    str_detect(item_l, "skill chip.*chest") & str_detect(item_l, "\\br\\b") ~ icon_or_badge("skill-chip-chest-r.svg", "R", "chip", "Skill Chip Chest (R)"),
+    str_detect(item_l, "skill chip.*chest") ~ icon_or_badge("skill-chip-chest-r.svg", "CHP", "chip", "Skill chip chest"),
     item_l == "basic chip material" ~ icon_or_badge("basic-chip-material.webp", "BAS", "chip", "Basic chip material"),
     item_l == "premium chip material" ~ icon_or_badge("premium-chip-material.webp", "PRM", "chip", "Premium chip material"),
     item_l == "skill medal" ~ icon_or_badge("skill-medal.webp", "MED", "medal", "Skill medal"),
