@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-06-16 season 1 glittering market updates"
+app_build_label <- "Build: 2026-07-02 train car capacity slider"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -1551,7 +1551,8 @@ ui <- fluidPage(
                    column(6,
                           div(class = "control-card hq-card",
                               numericInput("train_queue", "Commanders in Queue", value = 5, min = 0, max = 100, step = 1),
-                              div(class = "note", "Already waiting, before you join.")
+                              div(class = "note", "Already waiting, before you join."),
+                              sliderInput("train_capacity", "Train Car Capacity", min = 5, max = 7, value = 7, step = 1)
                           ),
                           tableOutput("train_table")),
                    column(6, uiOutput("saved_train_cars"))
@@ -2120,17 +2121,19 @@ server <- function(input, output, session) {
     value
   }
 
-  clear_train_builder <- function(queue = 5) {
+  clear_train_builder <- function(queue = 5, capacity = 7) {
     ids <- train_items(input$hq_level)$id
     for (id in ids) {
       updateNumericInput(session, paste0("train_", id), value = 0)
     }
     updateNumericInput(session, "train_queue", value = queue)
+    updateSliderInput(session, "train_capacity", value = capacity)
     session$sendCustomMessage("updateTrainSlotColors", list())
   }
 
   load_train_builder <- function(car) {
-    clear_train_builder(queue = car$queue)
+    capacity <- if (is.null(car$capacity) || is.na(car$capacity)) 7 else car$capacity
+    clear_train_builder(queue = car$queue, capacity = capacity)
     if (!is.null(car$counts) && length(car$counts)) {
       for (id in names(car$counts)) {
         updateNumericInput(session, paste0("train_", id), value = car$counts[[id]])
@@ -2208,12 +2211,18 @@ server <- function(input, output, session) {
     pmin(pmax(q, 0), 100)
   })
 
+  train_capacity_n <- reactive({
+    capacity <- suppressWarnings(as.numeric(input$train_capacity))
+    capacity <- ifelse(is.na(capacity), 7, capacity)
+    pmin(pmax(capacity, 5), 7)
+  })
+
   train_total_value <- reactive({
     sum(train_rows()$dia_total, na.rm = TRUE)
   })
 
   train_selection_probability <- reactive({
-    5 / max(train_queue_n() + 1, 5)
+    train_capacity_n() / max(train_queue_n() + 1, train_capacity_n())
   })
 
   current_train_snapshot <- reactive({
@@ -2231,6 +2240,7 @@ server <- function(input, output, session) {
       counts = as.list(counts),
       total_value = train_total_value(),
       queue = train_queue_n(),
+      capacity = train_capacity_n(),
       probability = train_selection_probability(),
       ev = train_selection_probability() * train_total_value()
     )
@@ -2325,6 +2335,12 @@ server <- function(input, output, session) {
         return(div(class = "saved-train-card saved-train-placeholder", paste0("Train Car ", i)))
       }
       car <- saved[[i]]
+      car_capacity <- if (is.null(car$capacity) || is.na(car$capacity)) 7 else car$capacity
+      car_probability <- if (is.null(car$probability) || is.na(car$probability)) {
+        if (is.null(car$total_value) || is.na(car$total_value) || car$total_value <= 0) NA_real_ else car$ev / car$total_value
+      } else {
+        car$probability
+      }
       div(
         class = "saved-train-card",
         div(class = "saved-title", htmltools::htmlEscape(car$name)),
@@ -2337,6 +2353,12 @@ server <- function(input, output, session) {
         div(class = "saved-row",
             span(class = "saved-label", "Queue Length"),
             span(class = "saved-value", fmt_num(car$queue, 0))),
+        div(class = "saved-row",
+            span(class = "saved-label", "Capacity"),
+            span(class = "saved-value", fmt_num(car_capacity, 0))),
+        div(class = "saved-row",
+            span(class = "saved-label", "Selection Probability"),
+            span(class = "saved-value", paste0(fmt_num(100 * car_probability, 1), "%"))),
         div(class = "saved-row",
             span(class = "saved-label", "Join EV"),
             span(class = "saved-value", paste0(fmt_dia_compact(car$ev), " Diamonds"))),
