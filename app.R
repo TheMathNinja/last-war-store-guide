@@ -5,7 +5,7 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-07-02 train car capacity slider"
+app_build_label <- "Build: 2026-07-23 gear boost choice chest"
 icon_cache_bust <- "20260604a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
@@ -666,7 +666,8 @@ build_value_model <- function(prices, efficient_percentile = 0.80) {
           "Campaign Storefront",
           "ID Points Mall",
           "Luxury Choice Chest",
-          "Deluxe Choice Chest"
+          "Deluxe Choice Chest",
+          "Gear Boost Choice Chest"
         ),
         4,
         1
@@ -1244,6 +1245,7 @@ currency_icon <- function(curr) {
     curr == "SEA" ~ icon_badge("SEA", "campaign", "Season Currency"),
     curr == "DEL" ~ icon_or_badge("choice-chest-deluxe.svg", "DEL", "chest", "Deluxe Choice Chest pick"),
     curr == "LUX" ~ icon_or_badge("choice-chest-luxury.svg", "LUX", "chest", "Luxury Choice Chest pick"),
+    curr == "GBC" ~ icon_or_badge("gear-blueprint-ur.svg", "GBC", "gear", "Gear Boost Choice Chest pick"),
     TRUE ~ icon_badge(curr, "misc", curr)
   )
 }
@@ -1325,6 +1327,7 @@ currency_label <- function(curr) {
     SEA = "Season Currency",
     DEL = "Deluxe Choice Chest pick",
     LUX = "Luxury Choice Chest pick",
+    GBC = "Gear Boost Choice Chest pick",
     COUR = "Courage Medals",
     BOUN = "Bounty Hunter Tokens",
     GLIT = "Glittering Market Tokens"
@@ -1598,7 +1601,7 @@ ui <- fluidPage(
                      div("The model estimates item values and currency exchange rates together from all connected store listings, with DIA fixed at 1."),
                      div("Each listing contributes an observation: item value is expected to equal listed base-unit price times currency value."),
                      div("Observation weight reflects available base-unit volume, softened with a square root and capped so high-limit rows matter more without dominating."),
-                     div("VIP, Alliance, Campaign, ID Points Mall, Luxury Choice Chest, and Deluxe Choice Chest are treated as weekly sources, so their listed volume counts as 4x before the square-root softening is applied."),
+                     div("VIP, Alliance, Campaign, ID Points Mall, Luxury Choice Chest, Deluxe Choice Chest, and Gear Boost Choice Chest are treated as weekly sources, so their listed volume counts as 4x before the square-root softening is applied."),
                      div("Rows far above or below the fitted network remain visible as diagnostics; they are not removed before the first fit.")),
                  div(class = "filter-bar",
                      selectInput("anchor_currency", "Observation currency",
