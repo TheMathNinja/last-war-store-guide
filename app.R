@@ -5,8 +5,8 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-07-23 HQ chest values"
-icon_cache_bust <- "20260723b"
+app_build_label <- "Build: 2026-07-23 treasure chests"
+icon_cache_bust <- "20260723c"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {
@@ -405,6 +405,18 @@ normalize_one_listing <- function(row, hq_level = 29) {
       flexibility_rank = 1L,
       anchor_group = item_key,
       normalization_note = "Crafting-material chain uses 4 of each level for 1 of the next."
+    ))
+  }
+
+  if (key == "gear material chest") {
+    return(tibble(
+      item_key = "superalloy equivalent",
+      item_canonical = "Superalloy / Resin / Ceramic Materials",
+      comparable_qty = qty / 4,
+      comparable_unit = "superalloy",
+      flexibility_rank = 1L,
+      anchor_group = item_key,
+      normalization_note = "1 Gear Material Chest contains 1 Iron Module; 4 Iron Modules are treated as 1 Superalloy."
     ))
   }
 
@@ -1173,6 +1185,10 @@ item_icon <- function(item, item_key = "") {
     str_detect(item_l, "12 hour shield|12 h shield") ~ icon_or_badge("shield-12h.svg", "12h", "shield", "12-hour shield"),
     str_detect(item_l, "24 hour shield|24 h shield") ~ icon_or_badge("shield-24h.svg", "24h", "shield", "24-hour shield"),
     item_l == "trade contract" ~ icon_badge("TRK", "contract", "Trade contract"),
+    item_l == "secret order" ~ icon_badge("ORD", "contract", "Secret Order"),
+    item_l == "treasure map fragment" ~ icon_badge("MAP", "contract", "Treasure Map Fragment"),
+    item_l == "mystery supply box" ~ icon_badge("?", "chest", "Mystery Supply Box"),
+    item_l == "gear material chest" ~ icon_badge("MAT", "material", "Gear Material Chest"),
     item_l == "universal decor component" ~ icon_or_badge("universal-decor-component.svg", "DEC", "decor", "Universal decor component"),
     str_detect(item_l, "decoration chest") ~ icon_or_badge("decoration-chest-ur.svg", "DEC", "decor", "Decoration chest"),
     item_l == "valor badge" ~ icon_or_badge("valor-badge.webp", "VAL", "badge", "Valor badge"),
@@ -1496,26 +1512,106 @@ default_hq_for_season <- function(season) {
 secret_mobile_squad_rewards <- function() {
   tibble::tribble(
     ~task_id, ~task, ~rarity, ~stars, ~task_icon, ~reward, ~qty_label, ~icon_item, ~value_kind, ~item_key, ~comparable_qty,
-    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown brown piece", "x2", "Unknown Reward", "pending", NA_character_, NA_real_,
-    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown purple crate", "x65", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Treasure Map Fragment", "x2", "Treasure Map Fragment", "treasure_map_fragment", NA_character_, NA_real_,
+    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Mystery Supply Box", "x65", "Mystery Supply Box", "mystery_supply_box", NA_character_, NA_real_,
     "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "4.1m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
-    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown green crate", "x480", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Gear Material Chest", "x480", "Gear Material Chest", "item", "superalloy equivalent", 480 / 4,
     "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Lv.2 Drone Component Chest", "x5", "Lv.3 Drone Component Chest", "item", "drone component level 1 equivalent", 15,
-    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown brown piece", "x2", "Unknown Reward", "pending", NA_character_, NA_real_,
-    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown purple crate", "x65", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Treasure Map Fragment", "x2", "Treasure Map Fragment", "treasure_map_fragment", NA_character_, NA_real_,
+    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Mystery Supply Box", "x65", "Mystery Supply Box", "mystery_supply_box", NA_character_, NA_real_,
     "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "4.1m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
     "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Iron", "3.2m", "Iron", "item", "iron resource", NA_real_,
     "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Food", "3.2m", "Food", "item", "food resource", NA_real_,
-    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown brown piece", "x2", "Unknown Reward", "pending", NA_character_, NA_real_,
-    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown purple crate", "x65", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Treasure Map Fragment", "x2", "Treasure Map Fragment", "treasure_map_fragment", NA_character_, NA_real_,
+    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Mystery Supply Box", "x65", "Mystery Supply Box", "mystery_supply_box", NA_character_, NA_real_,
     "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "4.1m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
     "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Iron", "3.2m", "Iron", "item", "iron resource", NA_real_,
     "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Food", "3.2m", "Food", "item", "food resource", NA_real_,
-    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown brown piece", "x2", "Unknown Reward", "pending", NA_character_, NA_real_,
-    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown purple crate", "x65", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Treasure Map Fragment", "x2", "Treasure Map Fragment", "treasure_map_fragment", NA_character_, NA_real_,
+    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Mystery Supply Box", "x65", "Mystery Supply Box", "mystery_supply_box", NA_character_, NA_real_,
     "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "4.1m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
     "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Upgrade Ore", "x800", "Upgrade Ore", "item", "upgrade ore", 800,
-    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "SR Resource Choice Chest", "x300", "Resource Chest (SR)", "item", "food resource", 300
+    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "SR Resource Choice Chest", "x300", "Resource Chest (SR)", "item", "food resource", 300,
+    "tech_support_refugees_ssr", "Provide Tech Support to Refugees", "SSR", 5, "Secret Mobile Squad Lv.5", "Treasure Map Fragment", "x1", "Treasure Map Fragment", "treasure_map_fragment", NA_character_, NA_real_,
+    "tech_support_refugees_ssr", "Provide Tech Support to Refugees", "SSR", 5, "Secret Mobile Squad Lv.5", "Mystery Supply Box", "x37", "Mystery Supply Box", "mystery_supply_box", NA_character_, NA_real_,
+    "tech_support_refugees_ssr", "Provide Tech Support to Refugees", "SSR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "2.4m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
+    "tech_support_refugees_ssr", "Provide Tech Support to Refugees", "SSR", 5, "Secret Mobile Squad Lv.5", "Gear Material Chest", "x290", "Gear Material Chest", "item", "superalloy equivalent", 290 / 4,
+    "tech_support_refugees_ssr", "Provide Tech Support to Refugees", "SSR", 5, "Secret Mobile Squad Lv.5", "Lv.1 Drone Component Chest", "x5", "Lv.1 Drone Component Chest", "item", "drone component level 1 equivalent", 5,
+    "protect_refugee_camp_ssr", "Protect Refugee Camp", "SSR", 5, "Secret Mobile Squad Lv.5", "Treasure Map Fragment", "x1", "Treasure Map Fragment", "treasure_map_fragment", NA_character_, NA_real_,
+    "protect_refugee_camp_ssr", "Protect Refugee Camp", "SSR", 5, "Secret Mobile Squad Lv.5", "Mystery Supply Box", "x37", "Mystery Supply Box", "mystery_supply_box", NA_character_, NA_real_,
+    "protect_refugee_camp_ssr", "Protect Refugee Camp", "SSR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "2.4m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
+    "protect_refugee_camp_ssr", "Protect Refugee Camp", "SSR", 5, "Secret Mobile Squad Lv.5", "Iron", "1.9m", "Iron", "item", "iron resource", NA_real_,
+    "protect_refugee_camp_ssr", "Protect Refugee Camp", "SSR", 5, "Secret Mobile Squad Lv.5", "Food", "1.9m", "Food", "item", "food resource", NA_real_
+  )
+}
+
+treasure_map_chest_rewards <- function() {
+  rolls <- 10
+  bind_rows(
+    tibble::tribble(
+      ~chest_tier, ~drop_rate, ~reward, ~qty, ~qty_label, ~probability, ~icon_item, ~value_kind, ~item_key, ~comparable_qty, ~assumption,
+      "UR", 0.10, "Universal Decor Component", 1, "x1", 1 / 11, "Universal Decor Component", "item", "universal decor component equivalent", 1, "Gold statue icon interpreted as Universal Decor Component.",
+      "UR", 0.10, "Hero EXP Chest (UR)", 10, "x10", 1 / 11, "Hero EXP Chest (UR)", "item", "hero exp chest sr equivalent", 240, "UR Hero EXP Chest = 24 SR Hero EXP Chests.",
+      "UR", 0.10, "Skill Medal", 1800, "x1.8k", 1 / 11, "Skill Medal", "item", "skill medal", 1800, "",
+      "UR", 0.10, "Gear Material Chest", 600, "x600", 1 / 11, "Gear Material Chest", "item", "superalloy equivalent", 600 / 4, "1 Gear Material Chest contains 1 Iron Module; 4 Iron Modules = 1 Superalloy.",
+      "UR", 0.10, "Upgrade Ore", 1200, "x1.2k", 1 / 11, "Upgrade Ore", "item", "upgrade ore", 1200, "",
+      "UR", 0.10, "1m Construction Speed-Up", 150, "x150", 1 / 11, "1m Construction Speed-Up", "item", "construction speed up hour", 150 / 60, "",
+      "UR", 0.10, "1m Research Speed-Up", 150, "x150", 1 / 11, "1m Research Speed-Up", "item", "research speed up hour", 150 / 60, "",
+      "UR", 0.10, "1m Training Speed-Up", 150, "x150", 1 / 11, "1m Training Speed-Up", "item", "training speed up hour", 150 / 60, "",
+      "UR", 0.10, "Iron Chest (UR)", 3, "x3", 1 / 11, "Iron Chest (UR)", "item", "iron resource", 3 * resource_tier_multiplier("ur"), "",
+      "UR", 0.10, "Food Chest (UR)", 3, "x3", 1 / 11, "Food Chest (UR)", "item", "food resource", 3 * resource_tier_multiplier("ur"), "",
+      "UR", 0.10, "Coin Chest (UR)", 3, "x3", 1 / 11, "Coin Chest (UR)", "item", "coins resource", 3 * resource_tier_multiplier("ur"), ""
+    ),
+    tibble::tribble(
+      ~chest_tier, ~drop_rate, ~reward, ~qty, ~qty_label, ~probability, ~icon_item, ~value_kind, ~item_key, ~comparable_qty, ~assumption,
+      "SSR", 0.30, "Hero EXP Chest (UR)", 2, "x2", 0.10, "Hero EXP Chest (UR)", "item", "hero exp chest sr equivalent", 2 * resource_tier_multiplier("ur"), "Gold box icon interpreted as Hero EXP Chest (UR).",
+      "SSR", 0.30, "Skill Medal", 600, "x600", 0.10, "Skill Medal", "item", "skill medal", 600, "",
+      "SSR", 0.30, "Gear Material Chest", 200, "x200", 0.10, "Gear Material Chest", "item", "superalloy equivalent", 200 / 4, "1 Gear Material Chest contains 1 Iron Module; 4 Iron Modules = 1 Superalloy.",
+      "SSR", 0.30, "Upgrade Ore", 400, "x400", 0.10, "Upgrade Ore", "item", "upgrade ore", 400, "",
+      "SSR", 0.30, "1m Construction Speed-Up", 50, "x50", 0.10, "1m Construction Speed-Up", "item", "construction speed up hour", 50 / 60, "",
+      "SSR", 0.30, "1m Research Speed-Up", 50, "x50", 0.10, "1m Research Speed-Up", "item", "research speed up hour", 50 / 60, "",
+      "SSR", 0.30, "1m Training Speed-Up", 50, "x50", 0.10, "1m Training Speed-Up", "item", "training speed up hour", 50 / 60, "",
+      "SSR", 0.30, "Iron Chest (SSR)", 3, "x3", 0.10, "Iron Chest (SSR)", "item", "iron resource", 3 * resource_tier_multiplier("ssr"), "",
+      "SSR", 0.30, "Food Chest (SSR)", 3, "x3", 0.10, "Food Chest (SSR)", "item", "food resource", 3 * resource_tier_multiplier("ssr"), "",
+      "SSR", 0.30, "Coin Chest (SSR)", 3, "x3", 0.10, "Coin Chest (SSR)", "item", "coins resource", 3 * resource_tier_multiplier("ssr"), ""
+    ),
+    tibble::tribble(
+      ~chest_tier, ~drop_rate, ~reward, ~qty, ~qty_label, ~probability, ~icon_item, ~value_kind, ~item_key, ~comparable_qty, ~assumption,
+      "SR", 0.60, "Skill Medal", 300, "x300", 1 / 9, "Skill Medal", "item", "skill medal", 300, "",
+      "SR", 0.60, "Gear Material Chest", 100, "x100", 1 / 9, "Gear Material Chest", "item", "superalloy equivalent", 100 / 4, "1 Gear Material Chest contains 1 Iron Module; 4 Iron Modules = 1 Superalloy.",
+      "SR", 0.60, "Upgrade Ore", 200, "x200", 1 / 9, "Upgrade Ore", "item", "upgrade ore", 200, "",
+      "SR", 0.60, "1m Construction Speed-Up", 25, "x25", 1 / 9, "1m Construction Speed-Up", "item", "construction speed up hour", 25 / 60, "",
+      "SR", 0.60, "1m Research Speed-Up", 25, "x25", 1 / 9, "1m Research Speed-Up", "item", "research speed up hour", 25 / 60, "",
+      "SR", 0.60, "1m Training Speed-Up", 25, "x25", 1 / 9, "1m Training Speed-Up", "item", "training speed up hour", 25 / 60, "",
+      "SR", 0.60, "Iron Chest (SR)", 12, "x12", 1 / 9, "Iron Chest (SR)", "item", "iron resource", 12 * resource_tier_multiplier("sr"), "",
+      "SR", 0.60, "Food Chest (SR)", 12, "x12", 1 / 9, "Food Chest (SR)", "item", "food resource", 12 * resource_tier_multiplier("sr"), "",
+      "SR", 0.60, "Coin Chest (SR)", 12, "x12", 1 / 9, "Coin Chest (SR)", "item", "coins resource", 12 * resource_tier_multiplier("sr"), ""
+    )
+  ) %>%
+    mutate(
+      chest = paste0("Treasure Map Chest (", chest_tier, ")"),
+      rolls = rolls
+    )
+}
+
+mystery_supply_box_rewards <- function() {
+  tibble::tribble(
+    ~tier, ~reward, ~qty, ~qty_label, ~probability, ~icon_item, ~value_kind, ~item_key, ~comparable_qty, ~assumption,
+    "UR", "Trade Contract", 1, "x1", 0.0200, "Trade Contract", "item", "trade contract", 1, "",
+    "UR", "Hero Recruitment Ticket", 1, "x1", 0.0025, "Hero Recruitment Ticket", "item", "hero recruitment ticket", 1, "",
+    "UR", "Survivor Recruitment Ticket", 1, "x1", 0.0025, "Survivor Recruitment Ticket", "item", "survivor recruitment ticket", 1, "",
+    "UR", "Diamonds", 5000, "x5.0k", 0.0001, "Diamonds", "flat", NA_character_, 5000, "",
+    "UR", "UR Hero Universal Shard", 1, "x1", 0.0010, "UR Hero Universal Shard", "item", "ur hero shard equivalent", 1, "",
+    "UR", "Secret Order", 1, "x1", 0.0100, "Secret Order", "flat", NA_character_, 100, "Secret Order is valued at 100 DIA.",
+    "SSR", "Decoration Chest (SSR)", 1, "x1", 0.0010, "Decoration Chest (SSR)", "pending", NA_character_, NA_real_, "Pending SSR decoration chest conversion.",
+    "SR", "Resource Chest (SR)", 1, "x1", 0.8394, "Resource Chest (SR)", "item", "food resource", 1, "Treated as one SR resource chest using Food/Iron value.",
+    "SR", "Skill Medal", 150, "x150", 0.0100, "Skill Medal", "item", "skill medal", 150, "",
+    "R", "Upgrade Ore", 100, "x100", 0.0250, "Upgrade Ore", "item", "upgrade ore", 100, "",
+    "R", "Diamonds", 10, "x10", 0.0100, "Diamonds", "flat", NA_character_, 10, "",
+    "R", "Diamonds", 50, "x50", 0.0010, "Diamonds", "flat", NA_character_, 50, "",
+    "R", "Gear Material Chest", 20, "x20", 0.0475, "Gear Material Chest", "item", "superalloy equivalent", 20 / 4, "1 Gear Material Chest contains 1 Iron Module; 4 Iron Modules = 1 Superalloy.",
+    "R", "5m Speed-Up Chest", 5, "x5", 0.0200, "5m Speed-Up Chest", "item", "universal speed up hour", 5 / 12, "Random 5m speed-up chest valued as universal 5m speed-up equivalent.",
+    "N", "Lv.1 Drone Component Chest", 1, "x1", 0.0100, "Lv.1 Drone Component Chest", "item", "drone component level 1 equivalent", 1, ""
   )
 }
 
@@ -1621,11 +1717,19 @@ ui <- fluidPage(
                      "This module estimates diamond value for Secret Mobile Squad task rewards using the same network prices as the rest of the app. The first pass includes the UR 5-star examples from the screenshot; rewards that still need names are marked pending."),
                  fluidRow(
                    column(4, div(class = "metric", div(class = "label", "Tasks entered"), div(class = "value", textOutput("secret_task_count", inline = TRUE)))),
-                   column(4, div(class = "metric", div(class = "label", "Best visible task"), div(class = "value", textOutput("secret_best_task", inline = TRUE)))),
-                   column(4, div(class = "metric", div(class = "label", "Best visible value"), div(class = "value", textOutput("secret_best_value", inline = TRUE))))
+                   column(4, div(class = "metric", div(class = "label", "Best task EV"), div(class = "value", textOutput("secret_best_task", inline = TRUE)))),
+                   column(4, div(class = "metric", div(class = "label", "Best task value"), div(class = "value", textOutput("secret_best_value", inline = TRUE))))
                  ),
                  uiOutput("secret_mobile_squad_cards"),
-                 tableOutput("secret_mobile_squad_table")),
+                 tableOutput("secret_mobile_squad_table"),
+                 h3("Treasure Map Chest Values"),
+                 div(class = "control-card note",
+                     "Each Treasure Map chest is modeled as 10 reward rolls. A Treasure Map is modeled as 10% UR chest, 30% SSR chest, and 60% SR chest; each Treasure Map Fragment is one seventh of that map value."),
+                 tableOutput("treasure_map_ur_table"),
+                 h3("Mystery Supply Box Values"),
+                 div(class = "control-card note",
+                     "Mystery Supply Box values use the probabilities shown in your screenshots. Secret Order is valued at 100 diamonds. Gear Material Chest is valued as 1 Iron Module = 0.25 Superalloy."),
+                 tableOutput("mystery_supply_box_table")),
         tabPanel("Stamina",
                  conditionalPanel(
                    condition = "input.season == 'Preseason'",
@@ -1969,7 +2073,8 @@ server <- function(input, output, session) {
       )
   }, sanitize.text.function = identity)
 
-  secret_mobile_squad_values <- reactive({
+  value_special_reward_rows <- function(rows, roll_multiplier = 1) {
+    has_probability <- "probability" %in% names(rows)
     model <- currency_model()
     item_values <- model$direct %>%
       select(item_key, dia_unit = direct_dia_unit)
@@ -1995,7 +2100,7 @@ server <- function(input, output, session) {
       as.numeric(str_replace_all(str_to_lower(label), "[^0-9.]", ""))
     }
 
-    secret_mobile_squad_rewards() %>%
+    rows %>%
       mutate(
         comparable_qty = case_when(
           reward == "Hero EXP" ~ parse_qty_label(qty_label) * 1e6 / sr_amount("hero_exp"),
@@ -2007,8 +2112,45 @@ server <- function(input, output, session) {
           value_kind == "item" ~ dia_for_item(item_key, comparable_qty),
           value_kind == "flat" ~ comparable_qty,
           TRUE ~ NA_real_
-        )
+        ),
+        expected_dia = if (has_probability) {
+          roll_multiplier * probability * dia_value
+        } else {
+          NA_real_
+        },
+        calculation = if (has_probability) {
+          if_else(
+            is.na(dia_value),
+            "Pending",
+            paste0(
+              fmt_num(roll_multiplier, 0), " rolls x ",
+              fmt_num(100 * probability, 2), "% x ",
+              fmt_sig(dia_value, 3), " DIA"
+            )
+          )
+        } else {
+          ""
+        }
       )
+  }
+
+  secret_mobile_squad_values <- reactive({
+    mystery_box_known_value <- sum(value_special_reward_rows(mystery_supply_box_rewards(), roll_multiplier = 1)$expected_dia, na.rm = TRUE)
+    treasure_chest_values <- value_special_reward_rows(treasure_map_chest_rewards(), roll_multiplier = 10) %>%
+      group_by(chest_tier, drop_rate) %>%
+      summarise(chest_value = sum(expected_dia, na.rm = TRUE), .groups = "drop")
+    treasure_map_value <- sum(treasure_chest_values$drop_rate * treasure_chest_values$chest_value, na.rm = TRUE)
+    treasure_fragment_value <- treasure_map_value / 7
+    rows <- secret_mobile_squad_rewards() %>%
+      mutate(
+        comparable_qty = case_when(
+          value_kind == "mystery_supply_box" ~ parse_num(qty_label) * mystery_box_known_value,
+          value_kind == "treasure_map_fragment" ~ parse_num(qty_label) * treasure_fragment_value,
+          TRUE ~ comparable_qty
+        ),
+        value_kind = if_else(value_kind %in% c("mystery_supply_box", "treasure_map_fragment"), "flat", value_kind)
+      )
+    value_special_reward_rows(rows)
   })
 
   secret_task_summary <- reactive({
@@ -2049,7 +2191,7 @@ server <- function(input, output, session) {
               span(class = "secret-rarity", row$rarity),
               span(row$task),
               span(class = "secret-stars", paste0(row$stars, "-star"))),
-          div(class = "secret-task-value", paste0(fmt_sig(row$known_value, 3), " DIA visible value")),
+          div(class = "secret-task-value", paste0(fmt_sig(row$known_value, 3), " DIA task EV")),
           if (row$pending_rewards > 0) {
             div(class = "secret-task-pending", paste0(row$pending_rewards, " reward", ifelse(row$pending_rewards == 1, "", "s"), " pending item ID"))
           }
@@ -2059,15 +2201,116 @@ server <- function(input, output, session) {
   })
 
   output$secret_mobile_squad_table <- renderTable({
+    task_totals <- secret_task_summary() %>%
+      transmute(task_id, task_total_dia = known_value)
+
     secret_mobile_squad_values() %>%
-      mutate(task_label = if_else(task_id == "grid_b", paste0(task, " (variant)"), task)) %>%
+      left_join(task_totals, by = "task_id") %>%
+      mutate(
+        task_label = if_else(task_id == "grid_b", paste0(task, " (variant)"), task),
+        component_share = if_else(!is.na(task_total_dia) & task_total_dia > 0 & !is.na(dia_value), dia_value / task_total_dia, NA_real_)
+      ) %>%
+      arrange(desc(task_total_dia), task_label, desc(dia_value)) %>%
       transmute(
         Task = paste0("<strong>", rarity, " ", task_label, "</strong>"),
         Stars = paste0(stars, "-star"),
         Reward = item_cell(reward, icon_item),
         Qty = qty_label,
-        `Diamond Value` = if_else(is.na(dia_value), "Pending", fmt_sig(dia_value, 3))
+        `Component EV` = if_else(is.na(dia_value), "Pending", fmt_sig(dia_value, 3)),
+        `Share of task` = if_else(is.na(component_share), "", paste0(fmt_num(100 * component_share, 1), "%")),
+        `Task EV` = fmt_sig(task_total_dia, 3)
       )
+  }, sanitize.text.function = identity)
+
+  treasure_map_ur_values <- reactive({
+    value_special_reward_rows(treasure_map_chest_rewards(), roll_multiplier = 10)
+  })
+
+  mystery_supply_box_values <- reactive({
+    value_special_reward_rows(mystery_supply_box_rewards(), roll_multiplier = 1)
+  })
+
+  output$treasure_map_ur_table <- renderTable({
+    rows <- treasure_map_ur_values()
+    chest_totals <- rows %>%
+      group_by(chest_tier, chest, drop_rate) %>%
+      summarise(chest_value = sum(expected_dia, na.rm = TRUE), pending = sum(is.na(expected_dia)), .groups = "drop")
+    map_value <- sum(chest_totals$drop_rate * chest_totals$chest_value, na.rm = TRUE)
+    fragment_value <- map_value / 7
+
+    rows %>%
+      transmute(
+        Chest = chest,
+        `Map drop rate` = paste0(fmt_num(100 * drop_rate, 0), "%"),
+        Reward = item_cell(reward, icon_item),
+        Qty = qty_label,
+        `Per-roll probability` = paste0(fmt_num(100 * probability, 2), "%"),
+        `Reward DIA value` = if_else(is.na(dia_value), "Pending", fmt_sig(dia_value, 3)),
+        Math = calculation,
+        `Weighted DIA` = if_else(is.na(expected_dia), "Pending", fmt_sig(expected_dia, 3)),
+        Assumption = assumption
+      ) %>%
+      bind_rows(chest_totals %>% transmute(
+        Chest = paste0("<strong>", chest, " total</strong>"),
+        `Map drop rate` = paste0(fmt_num(100 * drop_rate, 0), "%"),
+        Reward = "",
+        Qty = "",
+        `Per-roll probability` = "10 rolls",
+        `Reward DIA value` = "",
+        Math = if_else(pending > 0, paste0(pending, " pending reward row"), "All rows valued"),
+        `Weighted DIA` = bold_cell(fmt_sig(chest_value, 3)),
+        Assumption = "Sum of this chest tier's weighted DIA rows."
+      )) %>%
+      bind_rows(tibble(
+        Chest = "<strong>Treasure Map EV</strong>",
+        `Map drop rate` = "10/30/60",
+        Reward = "",
+        Qty = "",
+        `Per-roll probability` = "",
+        `Reward DIA value` = "",
+        Math = "10% UR + 30% SSR + 60% SR",
+        `Weighted DIA` = bold_cell(fmt_sig(map_value, 3)),
+        Assumption = "Expected value of one full treasure map."
+      )) %>%
+      bind_rows(tibble(
+        Chest = "<strong>Treasure Map Fragment EV</strong>",
+        `Map drop rate` = "1/7 map",
+        Reward = "",
+        Qty = "",
+        `Per-roll probability` = "",
+        `Reward DIA value` = "",
+        Math = paste0(fmt_sig(map_value, 3), " / 7"),
+        `Weighted DIA` = bold_cell(fmt_sig(fragment_value, 3)),
+        Assumption = "Each Treasure Map Fragment is one seventh of a map."
+      ))
+  }, sanitize.text.function = identity)
+
+  output$mystery_supply_box_table <- renderTable({
+    rows <- mystery_supply_box_values()
+    total_known <- sum(rows$expected_dia, na.rm = TRUE)
+    pending <- sum(is.na(rows$expected_dia))
+
+    rows %>%
+      transmute(
+        Tier = tier,
+        Reward = item_cell(reward, icon_item),
+        Qty = qty_label,
+        Probability = paste0(fmt_num(100 * probability, 2), "%"),
+        `Reward DIA value` = if_else(is.na(dia_value), "Pending", fmt_sig(dia_value, 3)),
+        Math = calculation,
+        `Weighted DIA` = if_else(is.na(expected_dia), "Pending", fmt_sig(expected_dia, 3)),
+        Assumption = assumption
+      ) %>%
+      bind_rows(tibble(
+        Tier = "",
+        Reward = "<strong>Composite value per Mystery Supply Box</strong>",
+        Qty = "",
+        Probability = "",
+        `Reward DIA value` = "",
+        Math = if_else(pending > 0, paste0(pending, " pending reward row"), "All rows valued"),
+        `Weighted DIA` = bold_cell(paste0(fmt_sig(total_known, 3), if_else(pending > 0, " known", ""))),
+        Assumption = "Sum of probability-weighted DIA rows."
+      ))
   }, sanitize.text.function = identity)
 
   stam_reward_values <- reactive({
