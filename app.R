@@ -5,8 +5,8 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-07-23 treasure chests"
-icon_cache_bust <- "20260723c"
+app_build_label <- "Build: 2026-07-23 SSR decor chest"
+icon_cache_bust <- "20260723d"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {
@@ -441,6 +441,18 @@ normalize_one_listing <- function(row, hq_level = 29) {
       flexibility_rank = 1L,
       anchor_group = item_key,
       normalization_note = "1 UR decoration chest is treated as 130 universal decor components."
+    ))
+  }
+
+  if (key == "decoration chest ssr") {
+    return(tibble(
+      item_key = "universal decor component equivalent",
+      item_canonical = "Universal Decor Component Equivalent",
+      comparable_qty = qty * 130 / 3,
+      comparable_unit = "Universal Decor Component",
+      flexibility_rank = 1L,
+      anchor_group = item_key,
+      normalization_note = "Temporary rule: 1 SSR decoration chest is treated as one third of a UR decoration chest."
     ))
   }
 
@@ -1603,7 +1615,7 @@ mystery_supply_box_rewards <- function() {
     "UR", "Diamonds", 5000, "x5.0k", 0.0001, "Diamonds", "flat", NA_character_, 5000, "",
     "UR", "UR Hero Universal Shard", 1, "x1", 0.0010, "UR Hero Universal Shard", "item", "ur hero shard equivalent", 1, "",
     "UR", "Secret Order", 1, "x1", 0.0100, "Secret Order", "flat", NA_character_, 100, "Secret Order is valued at 100 DIA.",
-    "SSR", "Decoration Chest (SSR)", 1, "x1", 0.0010, "Decoration Chest (SSR)", "pending", NA_character_, NA_real_, "Pending SSR decoration chest conversion.",
+    "SSR", "Decoration Chest (SSR)", 1, "x1", 0.0010, "Decoration Chest (SSR)", "item", "universal decor component equivalent", 130 / 3, "Temporary rule: SSR decoration chest = 1/3 UR decoration chest.",
     "SR", "Resource Chest (SR)", 1, "x1", 0.8394, "Resource Chest (SR)", "item", "food resource", 1, "Treated as one SR resource chest using Food/Iron value.",
     "SR", "Skill Medal", 150, "x150", 0.0100, "Skill Medal", "item", "skill medal", 150, "",
     "R", "Upgrade Ore", 100, "x100", 0.0250, "Upgrade Ore", "item", "upgrade ore", 100, "",
