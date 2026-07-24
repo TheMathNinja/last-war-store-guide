@@ -129,3 +129,229 @@ tr:nth-child(even) td { background: #fbfcfd; }
 #anchors_table .shiny-table, #network_table .shiny-table, #raw_table .shiny-table { border: 0; border-radius: 0; }
 .note { color: #5d6a76; font-size: 13px; line-height: 1.45; }
 .build-stamp { color: #7a8793; font-size: 12px; margin-top: 4px; }
+
+@media (max-width: 700px) {
+  body { background: #f4f6f8; font-size: 15px; }
+  .container-fluid { padding-left: 10px; padding-right: 10px; }
+  .app-shell { max-width: none; width: 100%; }
+  .title-row { padding: 12px 0 6px; gap: 10px; align-items: center; }
+  .app-logo { width: 86px; max-width: 24vw; }
+  h1 { font-size: 24px; line-height: 1.1; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; line-height: 1.35; }
+  .byline { font-size: 12px; margin-top: 6px; }
+  .build-stamp { font-size: 11px; }
+
+  .nav-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 0;
+    padding-bottom: 8px;
+    margin: 10px -10px 12px;
+    padding-left: 10px;
+  }
+  .nav-tabs > li { float: none; flex: 0 0 auto; margin-bottom: 0; }
+  .nav-tabs > li > a {
+    border: 1px solid #dfe4ea;
+    border-radius: 999px;
+    background: #fff;
+    color: #223142;
+    padding: 8px 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .nav-tabs > li.active > a,
+  .nav-tabs > li.active > a:focus,
+  .nav-tabs > li.active > a:hover {
+    background: #223142;
+    color: #fff;
+    border-color: #223142;
+  }
+
+  .control-card, .model-explainer, .anchor-key, .metric {
+    border-radius: 7px;
+    padding: 11px;
+    margin-bottom: 10px;
+  }
+  .hq-card { width: 100%; }
+  .form-group { margin-bottom: 10px; }
+  .form-control, .selectize-input, .selectize-dropdown { font-size: 16px; }
+  .metric { min-height: 0; }
+  .metric .label { font-size: 11px; }
+  .metric .value { font-size: 20px; overflow-wrap: anywhere; }
+  .metric .value a { font-size: 15px; }
+  .row { margin-left: -5px; margin-right: -5px; }
+  [class*="col-sm-"], [class*="col-md-"], [class*="col-lg-"] {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .train-save-row { align-items: stretch; flex-wrap: wrap; }
+  .train-save-row .btn { flex: 1 1 auto; min-height: 42px; }
+  .train-save-row .note { flex-basis: 100%; }
+  .train-grid { grid-template-columns: 1fr; gap: 8px; }
+  .train-item { padding: 9px; }
+  .saved-train-panel { padding: 10px; }
+  .saved-train-grid { grid-template-columns: 1fr; }
+  .saved-train-card .saved-row { grid-template-columns: 112px minmax(0, 1fr); }
+  .saved-train-card .saved-row-featured { grid-template-columns: 112px minmax(0, 1fr); }
+
+  .lw-icon { width: 26px; height: 26px; min-width: 26px; }
+  .icon-cell { white-space: normal; align-items: flex-start; line-height: 1.25; }
+  .deal-badge { min-width: 0; }
+
+  table.shiny-table,
+  .shiny-table {
+    border: 0;
+    background: transparent;
+    width: 100%;
+  }
+  .shiny-table thead { display: none; }
+  .shiny-table tbody,
+  .shiny-table tr,
+  .shiny-table td {
+    display: block;
+    width: 100% !important;
+  }
+  .shiny-table tr {
+    background: #fff;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+    margin: 0 0 10px;
+    overflow: hidden;
+  }
+  .shiny-table td {
+    border-bottom: 1px solid #edf1f5;
+    padding: 8px 10px !important;
+    min-height: 36px;
+    display: grid;
+    grid-template-columns: minmax(104px, 42%) minmax(0, 58%);
+    gap: 10px;
+    align-items: start;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    font-size: 13px !important;
+  }
+  .shiny-table td:last-child { border-bottom: 0; }
+  .shiny-table td::before {
+    content: "";
+    color: #657380;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+  .shiny-table td > * { min-width: 0; }
+
+  #store_table,
+  #item_table,
+  #train_table,
+  #stam_table,
+  #stam_purchase_table,
+  #arms_race_bonus_table,
+  #rates_table,
+  #network_table,
+  #anchors_table,
+  #raw_table {
+    overflow-x: visible;
+    max-height: none;
+    display: block;
+    border: 0;
+    border-radius: 0;
+  }
+  #store_table table,
+  #item_table table,
+  #anchors_table table {
+    table-layout: auto;
+    min-width: 0;
+  }
+
+  #store_table td:nth-child(1)::before { content: "Item"; }
+  #store_table td:nth-child(2)::before { content: "Qty"; }
+  #store_table td:nth-child(3)::before { content: "Base"; }
+  #store_table td:nth-child(4)::before { content: "Price"; }
+  #store_table td:nth-child(5)::before { content: "Limit"; }
+  #store_table td:nth-child(6)::before { content: "DIA/unit"; }
+  #store_table td:nth-child(7)::before { content: "Best"; }
+  #store_table td:nth-child(8)::before { content: "Best store"; }
+  #store_table td:nth-child(9)::before { content: "Normal"; }
+  #store_table td:nth-child(10)::before { content: "Value"; }
+
+  #item_table td:nth-child(1)::before { content: "Rank"; }
+  #item_table td:nth-child(2)::before { content: "Store"; }
+  #item_table td:nth-child(3)::before { content: "Item"; }
+  #item_table td:nth-child(4)::before { content: "Qty"; }
+  #item_table td:nth-child(5)::before { content: "Base"; }
+  #item_table td:nth-child(6)::before { content: "Price"; }
+  #item_table td:nth-child(7)::before { content: "Limit"; }
+  #item_table td:nth-child(8)::before { content: "DIA/unit"; }
+  #item_table td:nth-child(9)::before { content: "Normal"; }
+  #item_table td:nth-child(10)::before { content: "Value"; }
+
+  #train_table td:nth-child(1)::before { content: "Item"; }
+  #train_table td:nth-child(2)::before { content: "Count"; }
+  #train_table td:nth-child(3)::before { content: "Each"; }
+  #train_table td:nth-child(4)::before { content: "Total"; }
+
+  #rates_table td:nth-child(1)::before { content: "View"; }
+  #rates_table td:nth-child(2)::before { content: "Currency"; }
+  #rates_table td:nth-child(3)::before { content: "DIA/curr"; }
+  #rates_table td:nth-child(4)::before { content: "Items"; }
+  #rates_table td:nth-child(5)::before { content: "Min"; }
+  #rates_table td:nth-child(6)::before { content: "Median"; }
+  #rates_table td:nth-child(7)::before { content: "Max"; }
+
+  #network_table td:nth-child(1)::before { content: "Direction"; }
+  #network_table td:nth-child(2)::before { content: "Store"; }
+  #network_table td:nth-child(3)::before { content: "Item"; }
+  #network_table td:nth-child(4)::before { content: "Price"; }
+  #network_table td:nth-child(5)::before { content: "Limit"; }
+  #network_table td:nth-child(6)::before { content: "Value"; }
+
+  #anchors_table td:nth-child(1)::before { content: "Store"; }
+  #anchors_table td:nth-child(2)::before { content: "Item"; }
+  #anchors_table td:nth-child(3)::before { content: "Qty"; }
+  #anchors_table td:nth-child(4)::before { content: "Base"; }
+  #anchors_table td:nth-child(5)::before { content: "Price"; }
+  #anchors_table td:nth-child(6)::before { content: "Limit"; }
+  #anchors_table td:nth-child(7)::before { content: "Source"; }
+  #anchors_table td:nth-child(8)::before { content: "DIA/base"; }
+  #anchors_table td:nth-child(9)::before { content: "DIA/curr"; }
+  #anchors_table td:nth-child(10)::before { content: "Value"; }
+  #anchors_table td:nth-child(11)::before { content: "Weight"; }
+
+  #stam_table td:nth-child(1)::before { content: "Reward"; }
+  #stam_table td:nth-child(2)::before { content: "Qty"; }
+  #stam_table td:nth-child(3)::before { content: "Chance"; }
+  #stam_table td:nth-child(4)::before { content: "If received"; }
+  #stam_table td:nth-child(5)::before { content: "Expected"; }
+  #stam_table td:nth-child(6)::before { content: "Note"; }
+
+  #stam_purchase_table td:nth-child(1)::before { content: "Purchase"; }
+  #stam_purchase_table td:nth-child(2)::before { content: "Payoff"; }
+  #stam_purchase_table td:nth-child(3)::before { content: "Net"; }
+  #stam_purchase_table td:nth-child(4)::before { content: "Decision"; }
+
+  #arms_race_bonus_table td:nth-child(1)::before { content: "Tier"; }
+  #arms_race_bonus_table td:nth-child(2)::before { content: "Stamina"; }
+  #arms_race_bonus_table td:nth-child(3)::before { content: "Rewards"; }
+  #arms_race_bonus_table td:nth-child(4)::before { content: "Bonus"; }
+  #arms_race_bonus_table td:nth-child(5)::before { content: "DIA/Stam"; }
+
+  #raw_table td:nth-child(1)::before { content: "Store"; }
+  #raw_table td:nth-child(2)::before { content: "Item"; }
+  #raw_table td:nth-child(3)::before { content: "Qty"; }
+  #raw_table td:nth-child(4)::before { content: "Base"; }
+  #raw_table td:nth-child(5)::before { content: "Price"; }
+  #raw_table td:nth-child(6)::before { content: "Limit"; }
+
+  .train-summary-cell {
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+    background: transparent;
+  }
+}

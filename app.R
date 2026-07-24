@@ -5,8 +5,8 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-07-23 gear boost choice chest"
-icon_cache_bust <- "20260604a"
+app_build_label <- "Build: 2026-07-23 mobile layout"
+icon_cache_bust <- "20260723a"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {
@@ -1470,6 +1470,7 @@ initial_train_items <- train_items(hq_level = 29)
 
 ui <- fluidPage(
   tags$head(
+    tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
     tags$link(rel = "stylesheet", type = "text/css", href = paste0("styles.css?v=", icon_cache_bust)),
     tags$script(src = paste0("train.js?v=", icon_cache_bust))
   ),
