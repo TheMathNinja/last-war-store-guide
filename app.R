@@ -5,8 +5,8 @@ library(tidyr)
 library(stringr)
 
 bundled_workbook <- file.path("data", "Last War Price Guide.xlsx")
-app_build_label <- "Build: 2026-07-23 mobile layout"
-icon_cache_bust <- "20260723a"
+app_build_label <- "Build: 2026-07-23 HQ chest values"
+icon_cache_bust <- "20260723b"
 source_workbook <- if (file.exists(bundled_workbook)) {
   bundled_workbook
 } else {
@@ -136,11 +136,30 @@ duration_hours <- function(item) {
 }
 
 resource_chest_amounts <- function(hq_level = 29) {
-  # Source: Cpt Hedge resource chest calculator, credited there to kp7 from #163.
-  # The calculator exposes common/rare/epic/legendary values; this app maps those
-  # to R/SR/SSR/UR and uses SR as the base unit.
+  # Source: Last War Vault and Cpt Hedge community resource chest calculators.
+  # The calculators expose common/rare/epic/legendary values; this app maps
+  # those to R/SR/SSR/UR and uses SR as the base unit.
   sr_values <- tibble::tribble(
     ~hq_level, ~food, ~iron, ~coins, ~hero_exp,
+    1, 68400, 68400, 41000, 11160,
+    2, 68400, 68400, 41000, 11160,
+    3, 68400, 68400, 41000, 11160,
+    4, 68400, 68400, 41000, 11160,
+    5, 68400, 68400, 41000, 11160,
+    6, 68400, 68400, 41000, 14280,
+    7, 68400, 68400, 41000, 18180,
+    8, 68400, 68400, 41000, 23220,
+    9, 68400, 68400, 41000, 29640,
+    10, 68400, 68400, 41000, 37800,
+    11, 68400, 68400, 41000, 48300,
+    12, 68400, 68400, 41000, 61620,
+    13, 72000, 72000, 43200, 78660,
+    14, 79200, 79200, 47500, 100380,
+    15, 86400, 86400, 51800, 128100,
+    16, 90000, 90000, 54000, 163500,
+    17, 97200, 97200, 58300, 208620,
+    18, 100800, 100800, 60400, 253620,
+    19, 108000, 108000, 64000, 308280,
     20, 115000, 115000, 68750, 339840,
     21, 118800, 118800, 71280, 374700,
     22, 126000, 126000, 75600, 413100,
@@ -151,7 +170,12 @@ resource_chest_amounts <- function(hq_level = 29) {
     27, 154800, 154800, 92880, 672900,
     28, 158400, 158400, 95040, 741840,
     29, 165600, 165600, 99300, 817860,
-    30, 169200, 169200, 101520, 901740
+    30, 169200, 169200, 101520, 901740,
+    31, 176400, 176400, 107130, 1040000,
+    32, 180000, 180000, 112890, 1090000,
+    33, 187200, 187200, 118800, 1150000,
+    34, 194400, 194400, 122400, 1210000,
+    35, 198000, 198000, 126000, 1270000
   )
 
   sr_values %>%
@@ -1465,8 +1489,38 @@ item_choices <- function(prices_df) {
   stats::setNames(values, labels)
 }
 
-initial_prices <- load_prices(hq_level = 29, season = "Season 1")
-initial_train_items <- train_items(hq_level = 29)
+default_hq_for_season <- function(season) {
+  ifelse(season == "Preseason", 25, 30)
+}
+
+secret_mobile_squad_rewards <- function() {
+  tibble::tribble(
+    ~task_id, ~task, ~rarity, ~stars, ~task_icon, ~reward, ~qty_label, ~icon_item, ~value_kind, ~item_key, ~comparable_qty,
+    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown brown piece", "x2", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown purple crate", "x65", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "4.1m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
+    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown green crate", "x480", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "rescue_scientist", "Rescue Scientist", "UR", 5, "Secret Mobile Squad Lv.5", "Lv.2 Drone Component Chest", "x5", "Lv.3 Drone Component Chest", "item", "drone component level 1 equivalent", 15,
+    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown brown piece", "x2", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown purple crate", "x65", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "4.1m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
+    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Iron", "3.2m", "Iron", "item", "iron resource", NA_real_,
+    "grid_a", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Food", "3.2m", "Food", "item", "food resource", NA_real_,
+    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown brown piece", "x2", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown purple crate", "x65", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "4.1m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
+    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Iron", "3.2m", "Iron", "item", "iron resource", NA_real_,
+    "grid_b", "Disrupt Electric Grid", "UR", 5, "Secret Mobile Squad Lv.5", "Food", "3.2m", "Food", "item", "food resource", NA_real_,
+    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown brown piece", "x2", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Unknown purple crate", "x65", "Unknown Reward", "pending", NA_character_, NA_real_,
+    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Hero EXP", "4.1m", "Hero EXP Chest (SSR)", "item", "hero exp chest sr equivalent", NA_real_,
+    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "Upgrade Ore", "x800", "Upgrade Ore", "item", "upgrade ore", 800,
+    "rescue_missing_agent", "Rescue Missing Agent", "UR", 5, "Secret Mobile Squad Lv.5", "SR Resource Choice Chest", "x300", "Resource Chest (SR)", "item", "food resource", 300
+  )
+}
+
+initial_prices <- load_prices(hq_level = default_hq_for_season("Season 1"), season = "Season 1")
+initial_train_items <- train_items(hq_level = default_hq_for_season("Season 1"))
 
 ui <- fluidPage(
   tags$head(
@@ -1500,9 +1554,9 @@ ui <- fluidPage(
               "Season controls which store listings are available throughout the app.")
       ),
       div(class = "control-card hq-card",
-          sliderInput("hq_level", "HQ Level", min = 20, max = 30, value = 29, step = 1),
+          sliderInput("hq_level", "HQ Level", min = 20, max = 30, value = default_hq_for_season("Season 1"), step = 1),
           div(class = "note",
-              "This currently only affects the reported value of buying loose resources directly in the Diamond Storefront, which is usually a bad deal. Resource chest multipliers use fixed tier ratios; unentered HQ levels fall back to HQ 29 values.")
+              "This affects HQ-scaled resource and Hero EXP chest values, including direct Diamond Storefront resource comparisons. Season defaults: Preseason HQ 25, Season 1 HQ 30.")
       ),
       tabsetPanel(id = "main_tabs",
         tabPanel("Store View",
@@ -1562,6 +1616,16 @@ ui <- fluidPage(
                    column(6, uiOutput("saved_train_cars"))
                  ),
                  uiOutput("train_inputs")),
+        tabPanel("Secret Mobile Squad",
+                 div(class = "control-card note",
+                     "This module estimates diamond value for Secret Mobile Squad task rewards using the same network prices as the rest of the app. The first pass includes the UR 5-star examples from the screenshot; rewards that still need names are marked pending."),
+                 fluidRow(
+                   column(4, div(class = "metric", div(class = "label", "Tasks entered"), div(class = "value", textOutput("secret_task_count", inline = TRUE)))),
+                   column(4, div(class = "metric", div(class = "label", "Best visible task"), div(class = "value", textOutput("secret_best_task", inline = TRUE)))),
+                   column(4, div(class = "metric", div(class = "label", "Best visible value"), div(class = "value", textOutput("secret_best_value", inline = TRUE))))
+                 ),
+                 uiOutput("secret_mobile_squad_cards"),
+                 tableOutput("secret_mobile_squad_table")),
         tabPanel("Stamina",
                  conditionalPanel(
                    condition = "input.season == 'Preseason'",
@@ -1626,6 +1690,10 @@ server <- function(input, output, session) {
   selected_season <- reactive({
     if (is.null(input$season) || is.na(input$season) || input$season == "") "Season 1" else input$season
   })
+
+  observeEvent(input$season, {
+    updateSliderInput(session, "hq_level", value = default_hq_for_season(selected_season()))
+  }, ignoreInit = TRUE)
 
   prices <- reactive(load_prices(hq_level = input$hq_level, season = selected_season()))
   model_for <- function() build_value_model(prices())
@@ -1901,6 +1969,107 @@ server <- function(input, output, session) {
       )
   }, sanitize.text.function = identity)
 
+  secret_mobile_squad_values <- reactive({
+    model <- currency_model()
+    item_values <- model$direct %>%
+      select(item_key, dia_unit = direct_dia_unit)
+
+    dia_for_item <- function(item_key, comparable_qty = 1) {
+      value <- item_values$dia_unit[match(item_key, item_values$item_key)]
+      ifelse(is.na(value), NA_real_, comparable_qty * value)
+    }
+
+    sr_amount <- function(resource) {
+      amount <- resource_chest_amounts(input$hq_level) %>%
+        filter(resource == !!resource, tier == "sr") %>%
+        pull(amount)
+      if (!length(amount) || is.na(amount)) {
+        amount <- resource_chest_amounts(default_hq_for_season(selected_season())) %>%
+          filter(resource == !!resource, tier == "sr") %>%
+          pull(amount)
+      }
+      amount
+    }
+
+    parse_qty_label <- function(label) {
+      as.numeric(str_replace_all(str_to_lower(label), "[^0-9.]", ""))
+    }
+
+    secret_mobile_squad_rewards() %>%
+      mutate(
+        comparable_qty = case_when(
+          reward == "Hero EXP" ~ parse_qty_label(qty_label) * 1e6 / sr_amount("hero_exp"),
+          reward == "Iron" ~ parse_qty_label(qty_label) * 1e6 / sr_amount("iron"),
+          reward == "Food" ~ parse_qty_label(qty_label) * 1e6 / sr_amount("food"),
+          TRUE ~ comparable_qty
+        ),
+        dia_value = case_when(
+          value_kind == "item" ~ dia_for_item(item_key, comparable_qty),
+          value_kind == "flat" ~ comparable_qty,
+          TRUE ~ NA_real_
+        )
+      )
+  })
+
+  secret_task_summary <- reactive({
+    secret_mobile_squad_values() %>%
+      group_by(task_id, task, rarity, stars, task_icon) %>%
+      summarise(
+        known_value = sum(dia_value, na.rm = TRUE),
+        pending_rewards = sum(is.na(dia_value)),
+        .groups = "drop"
+      ) %>%
+      arrange(desc(known_value), task)
+  })
+
+  output$secret_task_count <- renderText({
+    fmt_num(nrow(secret_task_summary()), 0)
+  })
+
+  output$secret_best_task <- renderText({
+    summary <- secret_task_summary()
+    if (!nrow(summary)) "" else summary$task[[1]]
+  })
+
+  output$secret_best_value <- renderText({
+    summary <- secret_task_summary()
+    if (!nrow(summary)) "" else paste0(fmt_sig(summary$known_value[[1]], 3), " DIA")
+  })
+
+  output$secret_mobile_squad_cards <- renderUI({
+    summary <- secret_task_summary()
+    if (!nrow(summary)) return(NULL)
+    div(
+      class = "secret-task-grid",
+      lapply(seq_len(nrow(summary)), function(i) {
+        row <- summary[i, ]
+        div(
+          class = "secret-task-card",
+          div(class = "secret-task-title",
+              span(class = "secret-rarity", row$rarity),
+              span(row$task),
+              span(class = "secret-stars", paste0(row$stars, "-star"))),
+          div(class = "secret-task-value", paste0(fmt_sig(row$known_value, 3), " DIA visible value")),
+          if (row$pending_rewards > 0) {
+            div(class = "secret-task-pending", paste0(row$pending_rewards, " reward", ifelse(row$pending_rewards == 1, "", "s"), " pending item ID"))
+          }
+        )
+      })
+    )
+  })
+
+  output$secret_mobile_squad_table <- renderTable({
+    secret_mobile_squad_values() %>%
+      mutate(task_label = if_else(task_id == "grid_b", paste0(task, " (variant)"), task)) %>%
+      transmute(
+        Task = paste0("<strong>", rarity, " ", task_label, "</strong>"),
+        Stars = paste0(stars, "-star"),
+        Reward = item_cell(reward, icon_item),
+        Qty = qty_label,
+        `Diamond Value` = if_else(is.na(dia_value), "Pending", fmt_sig(dia_value, 3))
+      )
+  }, sanitize.text.function = identity)
+
   stam_reward_values <- reactive({
     model <- currency_model()
     item_values <- model$direct %>%
@@ -2037,7 +2206,7 @@ server <- function(input, output, session) {
         Chance = "",
         `DIA if received` = "",
         `Expected DIA` = bold_cell(fmt_sig(stam_known_total(), 3)),
-        Note = "Uses selected HQ level where available; otherwise uses HQ 29."
+        Note = "Uses selected HQ level for HQ-scaled resource and Hero EXP values."
       )) %>%
       bind_rows(tibble(
         Reward = "<strong>Total per 1 Stamina</strong>",

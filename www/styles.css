@@ -49,6 +49,15 @@ h1 { font-size: 30px; font-weight: 750; margin: 0 0 6px; letter-spacing: 0; }
 .train-warning-ok { background: #d8f3dc; color: #12632f; border: 1px solid #b7e4c7; }
 .train-warning-bad { background: #fff3bf; color: #7a5200; border: 1px solid #ffe08a; }
 .train-warning-over { background: #ffd6d6; color: #8a1f1f; border: 1px solid #f3a5a5; }
+.secret-task-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 12px 0 14px; }
+.secret-task-card { background: #ffffff; border: 1px solid #dfe4ea; border-radius: 8px; padding: 12px; min-height: 112px; }
+.secret-task-title { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; font-weight: 800; color: #223142; line-height: 1.2; }
+.secret-rarity { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; padding: 2px 6px; border-radius: 5px; background: #f59e0b; color: #4b2503; font-weight: 900; }
+.secret-stars { color: #657380; font-size: 12px; font-weight: 700; }
+.secret-task-value { margin-top: 10px; font-size: 20px; font-weight: 800; color: #12632f; }
+.secret-task-pending { margin-top: 4px; color: #8a5a00; font-size: 13px; font-weight: 700; }
+@media (max-width: 980px) { .secret-task-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .secret-task-grid { grid-template-columns: 1fr; } }
 .stam-buy-cell { display: block; margin: -4px -6px; padding: 7px 8px; border-radius: 6px; font-weight: 700; }
 .stam-buy-good { background: #d8f3dc; color: #12632f; }
 .stam-buy-bad { background: #ffd6d6; color: #8a1f1f; }
@@ -193,6 +202,9 @@ tr:nth-child(even) td { background: #fbfcfd; }
   .train-save-row .note { flex-basis: 100%; }
   .train-grid { grid-template-columns: 1fr; gap: 8px; }
   .train-item { padding: 9px; }
+  .secret-task-grid { grid-template-columns: 1fr; gap: 8px; }
+  .secret-task-card { padding: 10px; min-height: 0; }
+  .secret-task-value { font-size: 18px; }
   .saved-train-panel { padding: 10px; }
   .saved-train-grid { grid-template-columns: 1fr; }
   .saved-train-card .saved-row { grid-template-columns: 112px minmax(0, 1fr); }
